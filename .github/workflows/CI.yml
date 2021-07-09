@@ -28,6 +28,8 @@ jobs:
           - CLANG
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: install build dependencies
       run: |
         sudo apt-get update
@@ -71,6 +73,8 @@ jobs:
           - CLANG
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
     - name: build and test
       shell: bash
       run: |
