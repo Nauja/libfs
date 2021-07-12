@@ -39,6 +39,12 @@ char* fs_get_cwd(char* buf, int size)
 #endif
 
 #if HAVE_SYS_STAT_H
+int fs_exists(const char* path)
+{
+	struct stat s;
+	return stat(path, &s);
+}
+
 int fs_is_directory(const char* path)
 {
 	struct stat s;
@@ -57,7 +63,8 @@ int fs_is_file(const char* path)
 #ifdef HAVE_STDIO_H
 void* fs_read_file(const char* path, int* size)
 {
-	FILE* file = fopen(path, "rb");
+	FILE* file = NULL;
+	errno_t err = fopen_s(&file, path, "rb");
 	if (!file)
 	{
 		return NULL;

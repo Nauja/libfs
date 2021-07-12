@@ -23,7 +23,7 @@ ExternalProject_Get_Property(cmocka source_dir binary_dir)
 add_library(cmocka_vendor STATIC SHARED IMPORTED)
 
 if(MSVC)
-  set(CMOCKA_LIBRARY "${CMOCKA_BINARY_DIR}/src/Release/cmocka.lib")
+  set(CMOCKA_LIBRARY "${CMOCKA_BINARY_DIR}/src/Release/cmocka-static.lib")
 else()
   set(CMOCKA_LIBRARY "${CMOCKA_BINARY_DIR}/src/libcmocka.a")
 endif()

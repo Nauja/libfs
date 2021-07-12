@@ -1,5 +1,6 @@
 include(CheckIncludeFile)
 include(CheckFunctionExists)
+include(CheckSymbolExists)
 
 # HEADER FILES
 check_include_file(malloc.h HAVE_MALLOC_H)
@@ -15,3 +16,7 @@ check_function_exists(free HAVE_FREE)
 check_function_exists(malloc HAVE_MALLOC)
 check_function_exists(memset HAVE_MEMSET)
 check_function_exists(memcpy HAVE_MEMCPY)
+check_function_exists(_snprintf_s HAVE__SNPRINTF_S)
+check_function_exists(_snprintf HAVE__SNPRINTF)
+check_symbol_exists(snprintf stdio.h HAVE_SNPRINTF)
+check_symbol_exists(vsnprintf stdio.h HAVE_VSNPRINTF)

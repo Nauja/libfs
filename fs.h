@@ -84,6 +84,13 @@ LIBFS_PUBLIC(int) fs_join_path(char* buf, int size, const char* left, const char
 LIBFS_PUBLIC(int) fs_is_directory(const char* path);
 
 /**
+ * Checks if the given path corresponds to an existing file or directory
+ * @param path path to test
+ * @return if path exists
+ */
+LIBFS_PUBLIC(int) fs_exists(const char* path);
+
+/**
  * Tell if a path points to an existing file
  * @param path path to test
  * @return if path is a file

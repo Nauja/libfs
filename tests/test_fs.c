@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <setjmp.h>
 #include <cmocka.h>
 #include "test_config.h"
@@ -19,6 +20,19 @@ static void test_path_join(void** state) {
     char buf[MAX_PATH];
     assert_join_path(buf, "tests", "data");
     assert_true(strcmp(buf, "tests/data") == 0);
+}
+
+static void test_exists(void** state) {
+    char cwd[MAX_PATH];
+    assert_get_cwd(cwd);
+
+    char buf[MAX_PATH];
+    assert_join_path(buf, cwd, DIRECTORY_DATA);
+    assert_true(fs_exists(buf));
+    assert_join_path(buf, cwd, FILE_HELLO);
+    assert_true(fs_exists(buf));
+    assert_join_path(buf, cwd, FILE_UNKNOWN);
+    assert_false(fs_exists(buf));
 }
 
 static void test_is_directory(void** state) {
@@ -77,6 +91,7 @@ int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_get_cwd),
         cmocka_unit_test(test_path_join),
+        cmocka_unit_test(test_exists),
         cmocka_unit_test(test_is_directory),
         cmocka_unit_test(test_is_file),
         cmocka_unit_test(test_read_unknown_file),
