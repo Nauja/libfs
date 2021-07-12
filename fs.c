@@ -3,6 +3,9 @@
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
+#ifdef HAVE_SYS_SENDFILE_H
+#include <sys/sendfile.h>
+#endif
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
@@ -40,7 +43,9 @@ void fs_absolute(const char* path, char* buf, int size)
 {
 	realpath(path, buf);
 }
+#endif
 
+#if HAVE_SENDFILE_H
 void fs_copy(const char* from, const char* to)
 {
 	fs_copy_file(from, to);
