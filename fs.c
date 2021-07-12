@@ -48,15 +48,13 @@ void fs_copy(const char* from, const char* to)
 
 void fs_copy_file(const char* from, const char* to)
 {
-	FILE* ffrom = NULL;
-	FILE* fto = NULL;
-	errno_t err = fopen_s(&ffrom, from, "rb");
+	FILE* ffrom = fopen(from, "rb");
 	if (!ffrom)
 	{
 		return;
 	}
 
-	err = fopen_s(&fto, to, "wb");
+	FILE* fto = fopen(to, "wb");
 	if (!fto)
 	{
 		return;
@@ -129,8 +127,7 @@ int fs_is_symlink(const char* path)
 #ifdef HAVE_STDIO_H
 long fs_file_size(const char* path)
 {
-	FILE* file = NULL;
-	errno_t err = fopen_s(&file, path, "rb");
+	FILE* file = fopen(path, "rb");
 	if (!file)
 	{
 		return -1;
@@ -145,8 +142,7 @@ long fs_file_size(const char* path)
 
 void* fs_read_file(const char* path, int* size)
 {
-	FILE* file = NULL;
-	errno_t err = fopen_s(&file, path, "rb");
+	FILE* file = fopen(path, "rb");
 	if (!file)
 	{
 		return NULL;
