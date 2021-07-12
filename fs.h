@@ -59,12 +59,34 @@ extern "C"
 #endif
 
 /**
+ * Composes an absolute path
+ * @param buf buffer for writing path
+ * @param size buffer size
+ * @return buffer or NULL
+ */
+LIBFS_PUBLIC(void) fs_absolute(const char* path, char* buf, int size);
+
+/**
+ * Copies files or directories
+ * @param from path to the source file, directory, or symlink
+ * @param to path to the target file, directory, or symlink
+ */
+LIBFS_PUBLIC(void) fs_copy(const char* from, const char* to);
+
+/**
+ * Copies file contents
+ * @param from path to the source file
+ * @param to path to the target file
+ */
+LIBFS_PUBLIC(void) fs_copy_file(const char* from, const char* to);
+
+/**
  * Get the current working directory
  * @param buf buffer for writing path
  * @param size buffer size
  * @return buffer or NULL
  */
-LIBFS_PUBLIC(char*) fs_get_cwd(char* buf, int size);
+LIBFS_PUBLIC(char*) fs_current_path(char* buf, int size);
 
 /**
  * Concatenate two paths together
@@ -77,13 +99,6 @@ LIBFS_PUBLIC(char*) fs_get_cwd(char* buf, int size);
 LIBFS_PUBLIC(int) fs_join_path(char* buf, int size, const char* left, const char* right);
 
 /**
- * Tell if a path points to an existing directory
- * @param path path to test
- * @return if path is a directory
- */
-LIBFS_PUBLIC(int) fs_is_directory(const char* path);
-
-/**
  * Checks if the given path corresponds to an existing file or directory
  * @param path path to test
  * @return if path exists
@@ -91,11 +106,32 @@ LIBFS_PUBLIC(int) fs_is_directory(const char* path);
 LIBFS_PUBLIC(int) fs_exists(const char* path);
 
 /**
- * Tell if a path points to an existing file
+ * Returns the size of a file
+ * @param path path to examine
+ * @return the size of the file, in bytes
+ */
+LIBFS_PUBLIC(long) fs_file_size(const char* path);
+
+/**
+ * Checks if the given path corresponds to a directory
+ * @param path path to test
+ * @return if path is a directory
+ */
+LIBFS_PUBLIC(int) fs_is_directory(const char* path);
+
+/**
+ * Checks if the given path corresponds to a file
  * @param path path to test
  * @return if path is a file
  */
 LIBFS_PUBLIC(int) fs_is_file(const char* path);
+
+/**
+ * Checks if the given path corresponds to a symbolic link
+ * @param path path to test
+ * @return if path is a symbolic link
+ */
+LIBFS_PUBLIC(int) fs_is_symlink(const char* path);
 
 /**
  * Read content of a file
@@ -104,6 +140,8 @@ LIBFS_PUBLIC(int) fs_is_file(const char* path);
  * @return file content
  */
 LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
+
+LIBFS_PUBLIC(void) fs_temp_directory_path(char* buf, int size);
 
 #ifdef __cplusplus
 }

@@ -7,9 +7,9 @@
 #define MAX_PATH 256
 #endif
 
-static void _get_cwd(char* buf)
+static void _current_path(char* buf)
 {
-	assert_non_null(fs_get_cwd(buf, MAX_PATH));
+	assert_non_null(fs_current_path(buf, MAX_PATH));
 }
 
 static int _join_path(char* buf, const char* left, const char* right)
@@ -19,7 +19,7 @@ static int _join_path(char* buf, const char* left, const char* right)
 	return size;
 }
 
-#define assert_get_cwd(buf) _get_cwd(buf)
+#define assert_current_path(buf) _current_path(buf)
 #define assert_join_path(buf, left, right) _join_path(buf, left, right)
 
 int string_ends_with(const char* str, const char* suffix)
