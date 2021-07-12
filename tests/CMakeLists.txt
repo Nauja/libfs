@@ -48,7 +48,9 @@ target_include_directories(libfs-${_TEST}
         ${CMAKE_BINARY_DIR})
 
 # Required for static linking CMocka
+if (WIN32)
 target_compile_options(libfs-${_TEST} PRIVATE "/MD$<$<CONFIG:Release>:>" "/MDd$<$<CONFIG:Debug>:>")
+endif()
 
 # Copy test files
 file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR} FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
