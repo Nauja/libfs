@@ -25,7 +25,7 @@ add_library(cmocka_vendor STATIC SHARED IMPORTED)
 if(MSVC)
   set(CMOCKA_LIBRARY "${CMOCKA_BINARY_DIR}/src/Release/cmocka-static.lib")
 else()
-  set(CMOCKA_LIBRARY "${CMOCKA_BINARY_DIR}/src/libcmocka.a")
+  set(CMOCKA_LIBRARY "${CMOCKA_BINARY_DIR}/src/libcmocka-static.a")
 endif()
 
 add_dependencies(cmocka_vendor cmocka)
