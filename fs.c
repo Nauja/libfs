@@ -135,7 +135,7 @@ long fs_file_size(const char* path)
 	FILE* file = fopen(path, "rb");
 	if (!file)
 	{
-		return -1;
+		return -1L;
 	}
 
 	fseek(file, 0, SEEK_END);
