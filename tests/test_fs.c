@@ -52,11 +52,11 @@ static void test_file_size(void** state) {
 
     char buf[MAX_PATH];
     assert_join_path(buf, cwd, DIRECTORY_DATA);
-    assert_true(fs_file_size(buf) == -1L);
+    assert_int_equal(fs_file_size(buf), -1L);
     assert_join_path(buf, cwd, FILE_HELLO);
-    assert_true(fs_file_size(buf) == 5);
+    assert_int_equal(fs_file_size(buf), 5);
     assert_join_path(buf, cwd, FILE_UNKNOWN);
-    assert_true(fs_file_size(buf) == -1L);
+    assert_int_equal(fs_file_size(buf), -1L);
 }
 
 static void test_is_directory(void** state) {

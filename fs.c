@@ -106,23 +106,20 @@ int fs_exists(const char* path)
 int fs_is_directory(const char* path)
 {
 	struct stat s;
-	stat(path, &s);
-	return s.st_mode & S_IFDIR;
+	return (stat(path, &s) == 0) && (s.st_mode & S_IFDIR);
 }
 
 int fs_is_file(const char* path)
 {
 	struct stat s;
-	stat(path, &s);
-	return s.st_mode & S_IFREG;
+	return (stat(path, &s) == 0) && (s.st_mode & S_IFREG);
 }
 
 int fs_is_symlink(const char* path)
 {
 #ifndef HAVE_WINDOWS_H
 	struct stat s;
-	stat(path, &s);
-	return s.st_mode & S_IFLNK;
+	return (stat(path, &s) == 0) && (s.st_mode & S_IFLNK);
 #else
 	return 0;
 #endif
