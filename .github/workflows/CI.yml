@@ -57,7 +57,7 @@ jobs:
           cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
           cmake --build .
           make
-          make test
+          make test ARGS="-V"
           
   macos:
     runs-on: macos-latest
@@ -99,4 +99,4 @@ jobs:
           cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
           cmake --build .
           make
-          make test
+          make test ARGS="-V"
