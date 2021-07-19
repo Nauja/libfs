@@ -135,11 +135,13 @@ long fs_file_size(const char* path)
 		return -1L;
 	}
 
-	fseek(file, 0, SEEK_END);
-	long size = ftell(file);
+	struct stat stat;
+	if (fstat(file, &stat) == 0)
+	{
+		return stat.st_size;
+	}
 
-	fclose(file);
-	return size;
+	return -1L;
 }
 
 void* fs_read_file(const char* path, int* size)
