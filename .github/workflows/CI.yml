@@ -88,8 +88,8 @@ jobs:
           cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
           cmake --build .
           make
-          ls -l .
-          ls -l ..
+          ls -l src
+          ls -l ../src
     - name: build and test
       shell: bash
       run: |
