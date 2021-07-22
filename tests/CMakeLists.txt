@@ -33,6 +33,9 @@ add_dependencies(cmocka_vendor cmocka)
 # libfs tests
 set(_TEST "test_fs")
 
+message("cmocka_BINARY_DIR=${cmocka_BINARY_DIR}")
+message("CMOCKA_STATIC_LIBRARY=${CMOCKA_STATIC_LIBRARY}")
+
 include_directories(${CMOCKA_INCLUDE_DIR}
                     ${CMAKE_SOURCE_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR})
