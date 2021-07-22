@@ -40,12 +40,13 @@ include_directories(${CMOCKA_INCLUDE_DIR}
 add_cmocka_test(libfs-${_TEST}
                 SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${_TEST}.c
                 COMPILE_OPTIONS ${DEFAULT_C_COMPILE_FLAGS}
-                LINK_LIBRARIES ${CMOCKA_LIBRARY} ${LIBFS_STATIC_LIB}
+                LINK_LIBRARIES ${CMOCKA_STATIC_LIBRARY} ${LIBFS_STATIC_LIB}
 )
     
 target_include_directories(libfs-${_TEST}
     PRIVATE 
-        ${CMAKE_BINARY_DIR})
+        ${CMAKE_BINARY_DIR}
+        ${cmocka_BINARY_DIR})
 
 # Required for static linking CMocka
 if (WIN32)
