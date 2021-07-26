@@ -77,19 +77,6 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 1000
-    - name: build cmocka
-      shell: bash
-      run: |
-          EVENT_CMAKE_OPTIONS="-DWITH_STATIC_LIB=ON"
-          cd vendor/cmocka
-          mkdir -p build
-          cd build
-          echo [cmake]: cmake .. $EVENT_CMAKE_OPTIONS
-          cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
-          cmake --build .
-          make
-          ls -l src
-          ls -l ../src
     - name: build and test
       shell: bash
       run: |
