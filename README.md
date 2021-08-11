@@ -38,6 +38,12 @@ git submodule update
 mkdir build
 cd build
 cmake ..
+```
+
+CMake will correctly configure the defines at the top of [fs.h](fs.h) for your system.
+You can then build this library manually as described above, or by using:
+
+```
 make
 ```
 
