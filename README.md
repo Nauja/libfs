@@ -14,8 +14,7 @@ git submodule init
 git submodule update
 mkdir build
 cd build
-cmake .. || (rm -rf * && cmake ..)
-cmake --build .
+cmake ..
 make
 ```
 
