@@ -19,6 +19,37 @@ cmake --build .
 make
 ```
 
+## Usage
+
+Get the current working directory:
+
+```c
+char cwd[MAX_PATH];
+fs_current_path(&cwd, MAX_PATH);
+```
+
+Check if a file exists:
+
+```c
+char buf[MAX_PATH];
+fs_join_path(&buf, MAX_PATH, cwd, "foo.txt");
+if (!fs_exists(buf)) {
+  printf("file not found: %s\n", buf);
+}
+```
+
+Read whole file content:
+
+```c
+int size;
+void* data = fs_read_file(buf, &size);
+if (data == NULL) {
+  printf("can't read file");
+} else {
+  printf("file size: %d\n", size);
+}
+```
+
 ## License
 
 Licensed under the [MIT](LICENSE) License.
