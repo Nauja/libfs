@@ -48,6 +48,8 @@ if (data == NULL) {
 } else {
   printf("file size: %d\n", size);
 }
+
+free(data);
 ```
 
 ## License
