@@ -41,11 +41,14 @@ cmake ..
 ```
 
 CMake will correctly configure the defines at the top of [fs.h](fs.h) for your system.
+
 You can then build this library manually as described above, or by using:
 
 ```
 make
 ```
+
+This will generate `libfs.a` if building as a static library and `liblibfs.so` in the `build` directory.
 
 You can change the build process with a list of different options that you can pass to CMake. Turn them on with `On` and off with `Off`:
   * `-DWITH_STATIC_LIB=On`: Enable building as static library. (on by default)
