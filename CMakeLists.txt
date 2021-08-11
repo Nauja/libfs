@@ -45,7 +45,6 @@ endif()
 project(libfs VERSION ${PROJECT_VERSION} LANGUAGES C)
 
 include(ConfigureChecks)
-configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 option(WITH_STATIC_LIB "Build a static library" ON)
 option(UNIT_TESTING "Unit Tests Enabled" ON)
@@ -57,8 +56,7 @@ macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source buil
 message("Building for target : ${CMAKE_SYSTEM_NAME}")
 message("PROJECT_VERSION: ${PROJECT_VERSION}")
 message("VERSION_HASH: ${VERSION_HASH}")
-
-configure_file("${PROJECT_SOURCE_DIR}/version.h.in" "${CMAKE_CURRENT_BINARY_DIR}/version.h")
+configure_file(fs.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/fs.h)
 
 # libfs
 set(LIBFS_LIB libfs)

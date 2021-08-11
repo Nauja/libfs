@@ -13,77 +13,77 @@ extern "C"
 
 /* Define to 1 if you have the <stdio.h> header file. */
 #ifndef HAVE_STDIO_H
-/* #define HAVE_STDIO_H 1 */
+#cmakedefine01 HAVE_STDIO_H 1
 #endif
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #ifndef HAVE_STDLIB_H
-/* #define HAVE_STDLIB_H 1 */
+#cmakedefine01 HAVE_STDLIB_H 1
 #endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #ifndef HAVE_SYS_STAT_H
-/* #define HAVE_SYS_STAT_H 1 */
+#cmakedefine01 HAVE_SYS_STAT_H 1
 #endif
 
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
 #ifndef HAVE_SYS_SENDFILE_H
-/* #define HAVE_SYS_SENDFILE_H 1 */
+#cmakedefine01 HAVE_SYS_SENDFILE_H 1
 #endif
 
 /* Define to 1 if you have the <string.h> header file. */
 #ifndef HAVE_STRING_H
-/* #define HAVE_STRING_H 1 */
+#cmakedefine01 HAVE_STRING_H 1
 #endif
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #ifndef HAVE_UNISTD_H
-/* #define HAVE_UNISTD_H 1 */
+#cmakedefine01 HAVE_UNISTD_H 1
 #endif
 
 /* Define to 1 if you have the <windows.h> header file. */
 #ifndef HAVE_WINDOWS_H
-/* #define HAVE_WINDOWS_H 1 */
+#cmakedefine01 HAVE_WINDOWS_H 1
 #endif
 
 /* Define to 1 if you have the `free' function. */
 #ifndef HAVE_FREE
-/* #define HAVE_FREE 1 */
+#cmakedefine01 HAVE_FREE 1
 #endif
 
 /* Define to 1 if you have the `malloc' function. */
 #ifndef HAVE_MALLOC
-/* #define HAVE_MALLOC 1 */
+#cmakedefine01 HAVE_MALLOC 1
 #endif
 
 /* Define to 1 if you have the `memset' function. */
 #ifndef HAVE_MEMSET
-/* #define HAVE_MEMSET 1 */
+#cmakedefine01 HAVE_MEMSET 1
 #endif
 
 /* Define to 1 if you have the `memcpy' function. */
 #ifndef HAVE_MEMCPY
-/* #define HAVE_MEMCPY 1 */
+#cmakedefine01 HAVE_MEMCPY 1
 #endif
 
 /* Define to 1 if you have the `_snprintf_s' function. */
 #ifndef HAVE__SNPRINTF_S
-/* #define HAVE__SNPRINTF_S 1 */
+#cmakedefine01 HAVE__SNPRINTF_S 1
 #endif
 
 /* Define to 1 if you have the `_snprintf' function. */
 #ifndef HAVE__SNPRINTF
-/* #define HAVE__SNPRINTF 1 */
+#cmakedefine01 HAVE__SNPRINTF 1
 #endif
 
 /* Define to 1 if you have the `snprintf' function. */
 #ifndef HAVE_SNPRINTF
-/* #define HAVE_SNPRINTF 1 */
+#cmakedefine01 HAVE_SNPRINTF 1
 #endif
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #ifndef HAVE_VSNPRINTF
-/* #define HAVE_VSNPRINTF 1 */
+#cmakedefine01 HAVE_VSNPRINTF 1
 #endif
 
 #ifndef LIBFS_MALLOC
