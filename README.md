@@ -28,6 +28,8 @@ You should now be able to compile this library correctly.
 
 ## Build with CMake
 
+Tested with CMake >= 3.13.4:
+
 ```
 git clone https://github.com/Nauja/libfs.git
 cd libfs
