@@ -14,10 +14,13 @@ git submodule init
 git submodule update
 mkdir build
 cd build
-cmake .. || (rm -rf * && cmake ..)
-cmake --build .
+cmake ..
 make
 ```
+
+You can change the build process with a list of different options that you can pass to CMake. Turn them on with `On` and off with `Off`:
+  * `-DWITH_STATIC_LIB=On`: Enable building as static library. (on by default)
+  * `-DUNIT_TESTING=On`: Enable building the tests. (on by default)
 
 ## Usage
 
