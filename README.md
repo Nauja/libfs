@@ -5,6 +5,13 @@
 
 Portable filesystem API in ANSI C.
 
+## Table of contents:
+
+- [Build Manually](#build-manually)
+- [Build with CMake](#build-with-cmake)
+- [Build with Visual Studio](#build-with-visual-studio)
+- [Usage](#usage)
+
 ## Build Manually
 
 Copy the files [fs.c](fs.c) and [fs.h](fs.h) into an existing project.
