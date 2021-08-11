@@ -5,6 +5,27 @@
 
 Portable filesystem API in ANSI C.
 
+## Build Manually
+
+Copy the files [fs.c](fs.c) and [fs.h](fs.h) into an existing project.
+
+Comment or uncomment the defines at the top of `fs.h` depending on your configuration:
+
+```c
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#define HAVE_STDLIB_H 1
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#define HAVE_SYS_STAT_H 1
+
+...
+```
+
+You should now be able to compile this library correctly.
+
 ## Build with CMake
 
 ```
