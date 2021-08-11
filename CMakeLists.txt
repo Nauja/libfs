@@ -100,7 +100,12 @@ endif()
 
 # include cmocka
 if (UNIT_TESTING)
- 
-    include(AddCMockaTest) 
-    add_subdirectory(tests)
+    if (NOT WITH_STATIC_LIB)
+        message("Skip unit testing because WITH_STATIC_LIB option is off")
+
+    else()
+        include(AddCMockaTest) 
+        add_subdirectory(tests)
+
+    endif(NOT WITH_STATIC_LIB)
 endif (UNIT_TESTING)
