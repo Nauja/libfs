@@ -54,6 +54,18 @@ You can change the build process with a list of different options that you can p
   * `-DWITH_STATIC_LIB=On`: Enable building as static library. (on by default)
   * `-DUNIT_TESTING=On`: Enable building the tests. (on by default)
 
+## Build with Visual Studio
+
+Generate the Visual Studio solution with:
+
+```
+mkdir build
+cd build
+cmake .. -G "Visual Studio 16 2019"
+```
+
+You can now open `build/libfs.sln` and compile the library.
+
 ## Usage
 
 Get the current working directory:
