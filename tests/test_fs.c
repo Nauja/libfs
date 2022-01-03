@@ -11,6 +11,8 @@
 #define FILE_HELLO "data/hello.txt"
 #define FILE_UNKNOWN "unknown"
 
+typedef struct fs_directory_iterator fs_directory_iterator;
+
 static void test_absolute(void** state) {
     char cwd[MAX_PATH];
     assert_current_path(cwd);
@@ -30,7 +32,7 @@ static void test_get_cwd(void** state) {
 static void test_path_join(void** state) {
     char buf[MAX_PATH];
     assert_join_path(buf, "tests", "data");
-    assert_true(strcmp(buf, "tests/data") == 0);
+    assert_string_equal(buf, "tests/data");
 }
 
 static void test_exists(void** state) {
@@ -111,6 +113,32 @@ static void test_read_file(void** state) {
     free(data);
 }
 
+static void test_read_dir(void** state) {
+    char cwd[MAX_PATH];
+    assert_current_path(cwd);
+
+    fs_directory_iterator* it = fs_open_dir(cwd, MAX_PATH);
+    assert_non_null(it);
+
+    size_t has_data = 0;
+    while (fs_read_dir(it))
+    {
+        if (strcmp(it->path, DIRECTORY_DATA) != 0)
+        {
+            has_data = 1;
+        }
+    }
+
+    assert_true(has_data);
+
+    fs_close_dir(it);
+}
+
+static void test_read_unknown_dir(void** state) {
+    fs_directory_iterator* it = fs_open_dir("invalid dir", 12);
+    assert_null(it);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_absolute),
@@ -121,7 +149,9 @@ int main(void) {
         cmocka_unit_test(test_is_directory),
         cmocka_unit_test(test_is_file),
         cmocka_unit_test(test_read_unknown_file),
-        cmocka_unit_test(test_read_file)
+        cmocka_unit_test(test_read_file),
+        cmocka_unit_test(test_read_dir),
+        cmocka_unit_test(test_read_unknown_dir)
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

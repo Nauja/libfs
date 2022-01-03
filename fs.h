@@ -11,50 +11,85 @@ extern "C"
 #define LIBFS_VERSION_MINOR 1
 #define LIBFS_VERSION_PATCH 0
 
+/* Define to 1 if you have the <dirent.h> header file. */
+#ifndef HAVE_DIRENT_H
+/* #undef HAVE_DIRENT_H */
+#endif
+
 /* Define to 1 if you have the <stdio.h> header file. */
-// #define HAVE_STDIO_H 1
+#ifndef HAVE_STDIO_H
+#define HAVE_STDIO_H 1
+#endif
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-// #define HAVE_STDLIB_H 1
+#ifndef HAVE_STDLIB_H
+#define HAVE_STDLIB_H 1
+#endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-// #define HAVE_SYS_STAT_H 1
+#ifndef HAVE_SYS_STAT_H
+#define HAVE_SYS_STAT_H 1
+#endif
 
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
-// #define HAVE_SYS_SENDFILE_H 1
+#ifndef HAVE_SYS_SENDFILE_H
+/* #undef HAVE_SYS_SENDFILE_H */
+#endif
 
 /* Define to 1 if you have the <string.h> header file. */
-// #define HAVE_STRING_H 1
+#ifndef HAVE_STRING_H
+#define HAVE_STRING_H 1
+#endif
 
 /* Define to 1 if you have the <unistd.h> header file. */
-// #define HAVE_UNISTD_H 1
+#ifndef HAVE_UNISTD_H
+/* #undef HAVE_UNISTD_H */
+#endif
 
 /* Define to 1 if you have the <windows.h> header file. */
-// #define HAVE_WINDOWS_H 1
+#ifndef HAVE_WINDOWS_H
+#define HAVE_WINDOWS_H 1
+#endif
 
 /* Define to 1 if you have the `free' function. */
-// #define HAVE_FREE 1
+#ifndef HAVE_FREE
+#define HAVE_FREE 1
+#endif
 
 /* Define to 1 if you have the `malloc' function. */
-// #define HAVE_MALLOC 1
+#ifndef HAVE_MALLOC
+#define HAVE_MALLOC 1
+#endif
 
 /* Define to 1 if you have the `memset' function. */
-// #define HAVE_MEMSET 1
+#ifndef HAVE_MEMSET
+#define HAVE_MEMSET 1
+#endif
 
 /* Define to 1 if you have the `memcpy' function. */
-// #define HAVE_MEMCPY 1
+#ifndef HAVE_MEMCPY
+#define HAVE_MEMCPY 1
+#endif
 
 /* Define to 1 if you have the `_snprintf_s' function. */
-// #define HAVE__SNPRINTF_S 1
+#ifndef HAVE__SNPRINTF_S
+/* #undef HAVE__SNPRINTF_S */
+#endif
 
 /* Define to 1 if you have the `_snprintf' function. */
-// #define HAVE__SNPRINTF 1
+#ifndef HAVE__SNPRINTF
+/* #undef HAVE__SNPRINTF */
+#endif
 
 /* Define to 1 if you have the `snprintf' function. */
-// #define HAVE_SNPRINTF 1
+#ifndef HAVE_SNPRINTF
+#define HAVE_SNPRINTF 1
+#endif
 
 /* Define to 1 if you have the `vsnprintf' function. */
-// #define HAVE_VSNPRINTF 1
+#ifndef HAVE_VSNPRINTF
+#define HAVE_VSNPRINTF 1
+#endif
 
 #ifndef LIBFS_MALLOC
 #ifdef HAVE_MALLOC
@@ -98,6 +133,17 @@ extern "C"
 #define LIBFS_PUBLIC(type) type
 #endif
 #endif
+
+#include <stddef.h>
+
+struct fs_hooks
+{
+    /* malloc/free are CDECL on Windows regardless of the default calling convention of the compiler, so ensure the hooks allow passing those functions directly. */
+    void* (LIBFS_CDECL* malloc_fn)(size_t sz);
+    void (LIBFS_CDECL* free_fn)(void* ptr);
+};
+
+LIBFS_PUBLIC(void) fs_init_hooks(struct fs_hooks* hooks);
 
 /**
  * Composes an absolute path
@@ -183,6 +229,15 @@ LIBFS_PUBLIC(int) fs_is_symlink(const char* path);
 LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
 
 LIBFS_PUBLIC(void) fs_temp_directory_path(char* buf, int size);
+
+struct fs_directory_iterator
+{
+	const char* path;
+};
+
+LIBFS_PUBLIC(struct fs_directory_iterator*) fs_open_dir(const char* path, int size);
+LIBFS_PUBLIC(struct fs_directory_iterator*) fs_read_dir(struct fs_directory_iterator* it);
+LIBFS_PUBLIC(void) fs_close_dir(struct fs_directory_iterator* it);
 
 #ifdef __cplusplus
 }

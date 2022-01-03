@@ -11,50 +11,85 @@ extern "C"
 #define LIBFS_VERSION_MINOR 1
 #define LIBFS_VERSION_PATCH 0
 
+/* Define to 1 if you have the <dirent.h> header file. */
+#ifndef HAVE_DIRENT_H
+#cmakedefine HAVE_DIRENT_H 1
+#endif
+
 /* Define to 1 if you have the <stdio.h> header file. */
+#ifndef HAVE_STDIO_H
 #cmakedefine HAVE_STDIO_H 1
+#endif
 
 /* Define to 1 if you have the <stdlib.h> header file. */
+#ifndef HAVE_STDLIB_H
 #cmakedefine HAVE_STDLIB_H 1
+#endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
+#ifndef HAVE_SYS_STAT_H
 #cmakedefine HAVE_SYS_STAT_H 1
+#endif
 
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
+#ifndef HAVE_SYS_SENDFILE_H
 #cmakedefine HAVE_SYS_SENDFILE_H 1
+#endif
 
 /* Define to 1 if you have the <string.h> header file. */
+#ifndef HAVE_STRING_H
 #cmakedefine HAVE_STRING_H 1
+#endif
 
 /* Define to 1 if you have the <unistd.h> header file. */
+#ifndef HAVE_UNISTD_H
 #cmakedefine HAVE_UNISTD_H 1
+#endif
 
 /* Define to 1 if you have the <windows.h> header file. */
+#ifndef HAVE_WINDOWS_H
 #cmakedefine HAVE_WINDOWS_H 1
+#endif
 
 /* Define to 1 if you have the `free' function. */
+#ifndef HAVE_FREE
 #cmakedefine HAVE_FREE 1
+#endif
 
 /* Define to 1 if you have the `malloc' function. */
+#ifndef HAVE_MALLOC
 #cmakedefine HAVE_MALLOC 1
+#endif
 
 /* Define to 1 if you have the `memset' function. */
+#ifndef HAVE_MEMSET
 #cmakedefine HAVE_MEMSET 1
+#endif
 
 /* Define to 1 if you have the `memcpy' function. */
+#ifndef HAVE_MEMCPY
 #cmakedefine HAVE_MEMCPY 1
+#endif
 
 /* Define to 1 if you have the `_snprintf_s' function. */
+#ifndef HAVE__SNPRINTF_S
 #cmakedefine HAVE__SNPRINTF_S 1
+#endif
 
 /* Define to 1 if you have the `_snprintf' function. */
+#ifndef HAVE__SNPRINTF
 #cmakedefine HAVE__SNPRINTF 1
+#endif
 
 /* Define to 1 if you have the `snprintf' function. */
+#ifndef HAVE_SNPRINTF
 #cmakedefine HAVE_SNPRINTF 1
+#endif
 
 /* Define to 1 if you have the `vsnprintf' function. */
+#ifndef HAVE_VSNPRINTF
 #cmakedefine HAVE_VSNPRINTF 1
+#endif
 
 #ifndef LIBFS_MALLOC
 #ifdef HAVE_MALLOC
@@ -98,6 +133,17 @@ extern "C"
 #define LIBFS_PUBLIC(type) type
 #endif
 #endif
+
+#include <stddef.h>
+
+struct fs_hooks
+{
+    /* malloc/free are CDECL on Windows regardless of the default calling convention of the compiler, so ensure the hooks allow passing those functions directly. */
+    void* (LIBFS_CDECL* malloc_fn)(size_t sz);
+    void (LIBFS_CDECL* free_fn)(void* ptr);
+};
+
+LIBFS_PUBLIC(void) fs_init_hooks(struct fs_hooks* hooks);
 
 /**
  * Composes an absolute path
@@ -183,6 +229,15 @@ LIBFS_PUBLIC(int) fs_is_symlink(const char* path);
 LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
 
 LIBFS_PUBLIC(void) fs_temp_directory_path(char* buf, int size);
+
+struct fs_directory_iterator
+{
+	const char* path;
+};
+
+LIBFS_PUBLIC(struct fs_directory_iterator*) fs_open_dir(const char* path, int size);
+LIBFS_PUBLIC(struct fs_directory_iterator*) fs_read_dir(struct fs_directory_iterator* it);
+LIBFS_PUBLIC(void) fs_close_dir(struct fs_directory_iterator* it);
 
 #ifdef __cplusplus
 }
