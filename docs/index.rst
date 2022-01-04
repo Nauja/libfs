@@ -11,8 +11,9 @@ Welcome to libfs's documentation!
    :caption: Contents:
 
    intro
-   API Reference <api>
-   Roadmap <roadmap>
+   examples
+   api
+   roadmap
 
 
 Indices and tables

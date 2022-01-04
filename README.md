@@ -61,7 +61,7 @@ Check the [documentation](https://libfs.readthedocs.io/en/latest/) to find more 
 
 ## Build Manually
 
-Copy the files [fs.c](fs.c) and [fs.h](fs.h) into an existing project.
+Copy the files [fs.c](https://github.com/Nauja/libfs/blob/main/fs.c) and [fs.h](https://github.com/Nauja/libfs/blob/main/fs.h) into an existing project.
 
 Comment or uncomment the defines at the top of `fs.h` depending on your configuration:
 
@@ -94,7 +94,7 @@ cd build
 cmake ..
 ```
 
-CMake will correctly configure the defines at the top of [fs.h](fs.h) for your system.
+CMake will correctly configure the defines at the top of [fs.h](https://github.com/Nauja/libfs/blob/main/fs.h) for your system.
 
 You can then build this library manually as described above, or by using:
 
@@ -123,4 +123,4 @@ You can now open `build/libfs.sln` and compile the library.
 
 ## License
 
-Licensed under the [MIT](LICENSE) License.
+Licensed under the [MIT](https://github.com/Nauja/libfs/blob/main/LICENSE) License.

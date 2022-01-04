@@ -16,6 +16,11 @@ extern "C"
 #cmakedefine HAVE_DIRENT_H 1
 #endif
 
+/* Define to 1 if you have the <stddef.h> header file. */
+#ifndef HAVE_STDDEF_H
+#cmakedefine HAVE_STDDEF_H 1
+#endif
+
 /* Define to 1 if you have the <stdio.h> header file. */
 #ifndef HAVE_STDIO_H
 #cmakedefine HAVE_STDIO_H 1
@@ -91,6 +96,11 @@ extern "C"
 #cmakedefine HAVE_VSNPRINTF 1
 #endif
 
+#ifdef HAVE_STDDEF_H
+/* Required for size_t */
+#include <stddef.h>
+#endif
+
 #ifndef LIBFS_MALLOC
 #ifdef HAVE_MALLOC
 #define LIBFS_MALLOC malloc
@@ -138,15 +148,26 @@ extern "C"
 #endif
 #endif
 
-#include <stddef.h>
-
+/** Struct for custom hooks configuration. */
 struct fs_hooks
 {
-    /* malloc/free are CDECL on Windows regardless of the default calling convention of the compiler, so ensure the hooks allow passing those functions directly. */
-    void* (LIBFS_CDECL* malloc_fn)(size_t sz);
+    /** Custom malloc function. */
+    void* (LIBFS_CDECL* malloc_fn)(size_t size);
+
+    /**  Custom free function. */
     void (LIBFS_CDECL* free_fn)(void* ptr);
 };
 
+/**
+ * Register custom hooks.
+ * 
+ * @code{.c}
+ * struct fs_hooks hooks = { malloc, free };
+ * fs_init_hooks(&hooks);
+ * @endcode
+ * 
+ * @param[in] hooks Hooks configuration
+ */
 LIBFS_PUBLIC(void) fs_init_hooks(struct fs_hooks* hooks);
 
 /**
@@ -169,7 +190,7 @@ LIBFS_PUBLIC(void) fs_init_hooks(struct fs_hooks* hooks);
  * @param[in] size Buffer size
  * @return A pointer to buf if there is no error, NULL otherwise.
  */
-LIBFS_PUBLIC(char*) fs_absolute(const char* path, char* buf, int size);
+LIBFS_PUBLIC(char*) fs_absolute(const char* path, char* buf, size_t size);
 
 /**
  * Copies files or directories.
@@ -214,7 +235,7 @@ LIBFS_PUBLIC(void) fs_copy_file(const char* from, const char* to);
  * @param[in] size Buffer size
  * @return A pointer to buf if there is no error, NULL otherwise.
  */
-LIBFS_PUBLIC(char*) fs_current_dir(char* buf, int size);
+LIBFS_PUBLIC(char*) fs_current_dir(char* buf, size_t size);
 
 /**
  * Concatenates two paths together with the platform specific separator.
@@ -238,7 +259,7 @@ LIBFS_PUBLIC(char*) fs_current_dir(char* buf, int size);
  * @param[in] right Right part null-terminated path
  * @return The number of bytes written to buf.
  */
-LIBFS_PUBLIC(int) fs_join_path(char* buf, int size, const char* left, const char* right);
+LIBFS_PUBLIC(size_t) fs_join_path(char* buf, size_t size, const char* left, const char* right);
 
 /**
  * Checks if a path corresponds to an existing file or directory.
@@ -270,7 +291,7 @@ LIBFS_PUBLIC(int) fs_exists(const char* path);
  * @param[in] path Some null-terminated path
  * @return The size of the file, in bytes
  */
-LIBFS_PUBLIC(long) fs_file_size(const char* path);
+LIBFS_PUBLIC(size_t) fs_file_size(const char* path);
 
 /**
  * Checks if a path corresponds to a directory.
@@ -349,7 +370,7 @@ LIBFS_PUBLIC(int) fs_is_symlink(const char* path);
  * @param[out] size Number of bytes read
  * @return A pointer to read bytes if there is no error, NULL otherwise.
  */
-LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
+LIBFS_PUBLIC(void*) fs_read_file(const char* path, size_t* size);
 
 /**
  * Gets the absolute path to the platform specific temporary directory.
@@ -370,7 +391,7 @@ LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
  * @param[in] size Buffer size
  * @return A pointer to buf if there is no error, NULL otherwise.
  */
-LIBFS_PUBLIC(char*) fs_temp_dir(char* buf, int size);
+LIBFS_PUBLIC(char*) fs_temp_dir(char* buf, size_t size);
 
 /**
  * Struct used to iterate over a directory.

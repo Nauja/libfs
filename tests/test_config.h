@@ -12,9 +12,9 @@ static void _current_path(char* buf)
 	assert_non_null(fs_current_dir(buf, MAX_PATH));
 }
 
-static int _join_path(char* buf, const char* left, const char* right)
+static size_t _join_path(char* buf, const char* left, const char* right)
 {
-	int size = fs_join_path(buf, MAX_PATH, left, right);
+    size_t size = fs_join_path(buf, MAX_PATH, left, right);
 	assert_true(size);
 	return size;
 }
@@ -24,8 +24,8 @@ static int _join_path(char* buf, const char* left, const char* right)
 
 int string_ends_with(const char* str, const char* suffix)
 {
-    int str_len = strlen(str);
-    int suffix_len = strlen(suffix);
+    size_t str_len = strlen(str);
+    size_t suffix_len = strlen(suffix);
 
     return
         (str_len >= suffix_len) &&

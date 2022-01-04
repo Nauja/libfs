@@ -26,7 +26,7 @@
 #include <strsafe.h>
 #endif
 
-#define FS_TRUE 1
+#define LIBFS_TRUE 1
 
 typedef struct fs_hooks fs_hooks;
 typedef struct fs_directory_iterator fs_directory_iterator;
@@ -58,10 +58,13 @@ void fs_init_hooks(struct fs_hooks* hooks)
 	fs_global_hooks.free_fn = hooks->free_fn;
 }
 
+#define _LIBFS_MALLOC fs_global_hooks.malloc_fn
+#define _LIBFS_FREE fs_global_hooks.free_fn
+
 #if HAVE_WINDOWS_H
-char* fs_absolute(const char* path, char* buf, int size)
+char* fs_absolute(const char* path, char* buf, size_t size)
 {
-	if (!GetFullPathName(path, size, buf, NULL))
+	if (!GetFullPathName(path, (DWORD)size, buf, NULL))
 	{
 		return NULL;
 	}
@@ -80,7 +83,7 @@ void fs_copy_file(const char* from, const char* to)
 }
 #else
 #if HAVE_STDLIB_H
-char* fs_absolute(const char* path, char* buf, int size)
+char* fs_absolute(const char* path, char* buf, size_t size)
 {
 	if (!realpath(path, buf))
 	{
@@ -124,9 +127,9 @@ void fs_copy_file(const char* from, const char* to)
 #endif
 
 #ifdef HAVE_WINDOWS_H
-char* fs_current_dir(char* buf, int size)
+char* fs_current_dir(char* buf, size_t size)
 {
-	if (GetCurrentDirectory(size, buf))
+	if (GetCurrentDirectory((DWORD)size, buf))
 	{
 		return buf;
 	}
@@ -135,7 +138,7 @@ char* fs_current_dir(char* buf, int size)
 }
 #else
 #ifdef HAVE_UNISTD_H
-char* fs_current_dir(char* buf, int size)
+char* fs_current_dir(char* buf, size_t size)
 {
 	return getcwd(buf, size);
 }
@@ -173,7 +176,7 @@ int fs_is_symlink(const char* path)
 #endif
 
 #ifdef HAVE_STDIO_H
-long fs_file_size(const char* path)
+size_t fs_file_size(const char* path)
 {
 	FILE* file = fopen(path, "rb");
 	if (!file)
@@ -191,7 +194,7 @@ long fs_file_size(const char* path)
 	return stat.st_size;
 }
 
-void* fs_read_file(const char* path, int* size)
+void* fs_read_file(const char* path, size_t* size)
 {
 	FILE* file = fopen(path, "rb");
 	if (!file)
@@ -205,7 +208,7 @@ void* fs_read_file(const char* path, int* size)
 	fseek(file, 0, SEEK_SET);
 
 	// Read file content
-	void* data = fs_global_hooks.malloc_fn(length);
+	void* data = _LIBFS_MALLOC(length);
 	if (data) fread(data, length, 1, file);
 	fclose(file);
 
@@ -215,16 +218,16 @@ void* fs_read_file(const char* path, int* size)
 #endif
 
 #ifdef HAVE_STRING_H
-int fs_join_path(char* buf, int size, const char* left, const char* right)
+size_t fs_join_path(char* buf, size_t size, const char* left, const char* right)
 {
 	return snprintf(buf, size, "%s/%s", left, right);
 }
 #endif
 
 #if defined(HAVE_WINDOWS_H)
-char* fs_temp_dir(char* buf, int size)
+char* fs_temp_dir(char* buf, size_t size)
 {
-	if (!GetTempPath(size, buf))
+	if (!GetTempPath((DWORD)size, buf))
 	{
 		return NULL;
 	}
@@ -232,7 +235,7 @@ char* fs_temp_dir(char* buf, int size)
 	return buf;
 }
 #elif defined(HAVE_STDLIB_H)
-char* fs_temp_dir(char* buf, int size)
+char* fs_temp_dir(char* buf, size_t size)
 {
 	const char* path = getenv("TMPDIR");
 	if (!path)
@@ -256,7 +259,7 @@ typedef struct fs_win_directory_iterator
 
 struct fs_directory_iterator* fs_open_dir(const char* path)
 {
-	fs_win_directory_iterator* it = (fs_win_directory_iterator*)fs_global_hooks.malloc_fn(sizeof(fs_win_directory_iterator));
+	fs_win_directory_iterator* it = (fs_win_directory_iterator*)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
 	memset(it, 0, sizeof(fs_win_directory_iterator));
 
 	TCHAR szDir[MAX_PATH];
@@ -265,7 +268,7 @@ struct fs_directory_iterator* fs_open_dir(const char* path)
 
 	if ((it->hFind = FindFirstFile(szDir, &it->fdFile)) == INVALID_HANDLE_VALUE)
 	{
-		free(it);
+		_LIBFS_FREE(it);
 		return NULL;
 	}
 
@@ -278,7 +281,7 @@ struct fs_directory_iterator* fs_read_dir(struct fs_directory_iterator* it)
 
 	if (!_it->started)
 	{
-		_it->started = FS_TRUE;
+		_it->started = LIBFS_TRUE;
 	}
 	else if (!FindNextFile(_it->hFind, &_it->fdFile))
 	{
@@ -293,7 +296,7 @@ void fs_close_dir(struct fs_directory_iterator* it)
 {
 	fs_win_directory_iterator* _it = (fs_win_directory_iterator*)it;
 	FindClose(_it->hFind);
-	free(_it);
+	_LIBFS_FREE(_it);
 }
 #elif defined(HAVE_DIRENT_H)
 typedef struct fs_posix_directory_iterator
@@ -305,12 +308,12 @@ typedef struct fs_posix_directory_iterator
 
 struct fs_directory_iterator* fs_open_dir(const char* path)
 {
-	fs_posix_directory_iterator* it = (fs_posix_directory_iterator*)fs_global_hooks.malloc_fn(sizeof(fs_posix_directory_iterator));
+	fs_posix_directory_iterator* it = (fs_posix_directory_iterator*)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
 	memset(it, 0, sizeof(fs_posix_directory_iterator));
 
 	if (!(it->dir = opendir(path)))
 	{
-		free(it);
+		_LIBFS_FREE(it);
 		return NULL;
 	}
 
@@ -333,6 +336,6 @@ void fs_close_dir(struct fs_directory_iterator* it)
 {
 	fs_posix_directory_iterator* _it = (fs_posix_directory_iterator*)it;
 	closedir(_it->dir);
-	free(_it);
+	_LIBFS_FREE(_it);
 }
 #endif

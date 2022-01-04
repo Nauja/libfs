@@ -94,7 +94,7 @@ static void test_read_unknown_file(void** state) {
     char buf[MAX_PATH];
     assert_join_path(buf, cwd, FILE_UNKNOWN);
 
-    int size;
+    size_t size;
     void* data = fs_read_file(buf, &size);
     assert_null(data);
 }
@@ -106,7 +106,7 @@ static void test_read_file(void** state) {
     char buf[MAX_PATH];
     assert_join_path(buf, cwd, FILE_HELLO);
 
-    int size;
+    size_t size;
     void* data = fs_read_file(buf, &size);
     assert_non_null(data);
 
@@ -139,6 +139,11 @@ static void test_read_unknown_dir(void** state) {
     assert_null(it);
 }
 
+static void test_hooks(void** state) {
+    struct fs_hooks hooks = { malloc, free };
+    fs_init_hooks(&hooks);
+}
+
 int main(void) {
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_absolute),
@@ -151,7 +156,8 @@ int main(void) {
         cmocka_unit_test(test_read_unknown_file),
         cmocka_unit_test(test_read_file),
         cmocka_unit_test(test_read_dir),
-        cmocka_unit_test(test_read_unknown_dir)
+        cmocka_unit_test(test_read_unknown_dir),
+        cmocka_unit_test(test_hooks)
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
