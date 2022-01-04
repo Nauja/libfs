@@ -135,7 +135,7 @@ static void test_read_dir(void** state) {
 }
 
 static void test_read_unknown_dir(void** state) {
-    fs_directory_iterator* it = fs_open_dir("invalid dir", 12);
+    fs_directory_iterator* it = fs_open_dir("invalid dir");
     assert_null(it);
 }
 
