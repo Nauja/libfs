@@ -8,6 +8,8 @@
 *.tcl
 CMakeCache.txt
 
+*.bat
+build/
 build/*.cmake
 build/bin
 CMakeFiles
@@ -18,6 +20,8 @@ build/config.h
 build/version.h
 build/tests
 obj/
+Dockerfile*
+docs/Doxyfile
 
 Debug/
 Release/

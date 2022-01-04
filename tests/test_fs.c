@@ -117,7 +117,7 @@ static void test_read_dir(void** state) {
     char cwd[MAX_PATH];
     assert_current_path(cwd);
 
-    fs_directory_iterator* it = fs_open_dir(cwd, MAX_PATH);
+    fs_directory_iterator* it = fs_open_dir(cwd);
     assert_non_null(it);
 
     size_t has_data = 0;

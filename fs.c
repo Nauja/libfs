@@ -35,16 +35,16 @@ typedef struct fs_directory_iterator fs_directory_iterator;
 /* work around MSVC error C2322: '...' address of dllimport '...' is not static */
 static void* LIBFS_CDECL internal_malloc(size_t size)
 {
-	return malloc(size);
+	return LIBFS_MALLOC(size);
 }
 
 static void LIBFS_CDECL internal_free(void* pointer)
 {
-	free(pointer);
+	LIBFS_FREE(pointer);
 }
 #else
-#define internal_malloc malloc
-#define internal_free free
+#define internal_malloc LIBFS_MALLOC
+#define internal_free LIBFS_FREE
 #endif
 
 static fs_hooks fs_global_hooks = {
@@ -59,9 +59,14 @@ void fs_init_hooks(struct fs_hooks* hooks)
 }
 
 #if HAVE_WINDOWS_H
-void fs_absolute(const char* path, char* buf, int size)
+char* fs_absolute(const char* path, char* buf, int size)
 {
-	GetFullPathName(path, size, buf, NULL);
+	if (!GetFullPathName(path, size, buf, NULL))
+	{
+		return NULL;
+	}
+
+	return buf;
 }
 
 void fs_copy(const char* from, const char* to)
@@ -75,9 +80,14 @@ void fs_copy_file(const char* from, const char* to)
 }
 #else
 #if HAVE_STDLIB_H
-void fs_absolute(const char* path, char* buf, int size)
+char* fs_absolute(const char* path, char* buf, int size)
 {
-	realpath(path, buf);
+	if (!realpath(path, buf))
+	{
+		return NULL;
+	}
+
+	return buf;
 }
 #endif
 
@@ -195,7 +205,7 @@ void* fs_read_file(const char* path, int* size)
 	fseek(file, 0, SEEK_SET);
 
 	// Read file content
-	void* data = LIBFS_MALLOC(length);
+	void* data = fs_global_hooks.malloc_fn(size);
 	if (data) fread(data, length, 1, file);
 	fclose(file);
 
@@ -210,18 +220,28 @@ int fs_join_path(char* buf, int size, const char* left, const char* right)
 }
 #endif
 
-#ifdef HAVE_WINDOWS_H
-void fs_temp_directory_path(char* buf, int size)
+#if defined(HAVE_WINDOWS_H)
+char* fs_temp_directory_path(char* buf, int size)
 {
-	GetTempPath(size, buf);
+	if (!GetTempPath(size, buf))
+	{
+		return NULL;
+	}
+
+	return buf;
 }
-#else
-#ifdef HAVE_STDLIB_H
-void fs_temp_directory_path(char* buf, int size)
+#elif defined(HAVE_STDLIB_H)
+char* fs_temp_directory_path(char* buf, int size)
 {
-	char* path = getenv("TMPDIR");
+	const char* path = getenv("TMPDIR");
+	if (!path)
+	{
+		return NULL;
+	}
+
+	snprintf(buf, size, "%s", path);
+	return buf;
 }
-#endif
 #endif
 
 #if defined(HAVE_WINDOWS_H)
@@ -233,7 +253,7 @@ typedef struct fs_win_directory_iterator
 	size_t started;
 } fs_win_directory_iterator;
 
-struct fs_directory_iterator* fs_open_dir(const char* path, int size)
+struct fs_directory_iterator* fs_open_dir(const char* path)
 {
 	fs_win_directory_iterator* it = (fs_win_directory_iterator*)fs_global_hooks.malloc_fn(sizeof(fs_win_directory_iterator));
 	memset(it, 0, sizeof(fs_win_directory_iterator));
@@ -282,7 +302,7 @@ typedef struct fs_posix_directory_iterator
 	struct dirent* ent;
 } fs_posix_directory_iterator;
 
-struct fs_directory_iterator* fs_open_dir(const char* path, int size)
+struct fs_directory_iterator* fs_open_dir(const char* path)
 {
 	fs_posix_directory_iterator* it = (fs_posix_directory_iterator*)fs_global_hooks.malloc_fn(sizeof(fs_posix_directory_iterator));
 	memset(it, 0, sizeof(fs_posix_directory_iterator));

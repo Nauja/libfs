@@ -48,6 +48,7 @@ include(ConfigureChecks)
 
 option(WITH_STATIC_LIB "Build a static library" ON)
 option(UNIT_TESTING "Unit Tests Enabled" ON)
+option(DOXYGEN "Docs Enabled" OFF)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -107,3 +108,7 @@ if (UNIT_TESTING)
 
     endif(NOT WITH_STATIC_LIB)
 endif (UNIT_TESTING)
+
+if (DOXYGEN)
+    add_subdirectory ("docs")
+endif (DOXYGEN)
