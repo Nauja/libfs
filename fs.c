@@ -124,7 +124,7 @@ void fs_copy_file(const char* from, const char* to)
 #endif
 
 #ifdef HAVE_WINDOWS_H
-char* fs_current_path(char* buf, int size)
+char* fs_current_dir(char* buf, int size)
 {
 	if (GetCurrentDirectory(size, buf))
 	{
@@ -135,7 +135,7 @@ char* fs_current_path(char* buf, int size)
 }
 #else
 #ifdef HAVE_UNISTD_H
-char* fs_current_path(char* buf, int size)
+char* fs_current_dir(char* buf, int size)
 {
 	return getcwd(buf, size);
 }
@@ -222,7 +222,7 @@ int fs_join_path(char* buf, int size, const char* left, const char* right)
 #endif
 
 #if defined(HAVE_WINDOWS_H)
-char* fs_temp_directory_path(char* buf, int size)
+char* fs_temp_dir(char* buf, int size)
 {
 	if (!GetTempPath(size, buf))
 	{
@@ -232,7 +232,7 @@ char* fs_temp_directory_path(char* buf, int size)
 	return buf;
 }
 #elif defined(HAVE_STDLIB_H)
-char* fs_temp_directory_path(char* buf, int size)
+char* fs_temp_dir(char* buf, int size)
 {
 	const char* path = getenv("TMPDIR");
 	if (!path)

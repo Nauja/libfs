@@ -80,7 +80,7 @@ Get the current working directory:
 .. code-block:: c
 
     char cwd[MAX_PATH];
-     fs_current_path(&cwd, MAX_PATH);
+    fs_current_dir(&cwd, MAX_PATH);
 
 Check if a file exists:
 

@@ -9,7 +9,7 @@
 
 static void _current_path(char* buf)
 {
-	assert_non_null(fs_current_path(buf, MAX_PATH));
+	assert_non_null(fs_current_dir(buf, MAX_PATH));
 }
 
 static int _join_path(char* buf, const char* left, const char* right)

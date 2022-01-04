@@ -200,9 +200,9 @@ LIBFS_PUBLIC(void) fs_copy_file(const char* from, const char* to);
  * 
  * @code{.c}
  * char buf[MAX_PATH];
- * if (!fs_current_path(buf, MAX_PATH))
+ * if (!fs_current_dir(buf, MAX_PATH))
  * {
- *     print("fs_current_path failed");
+ *     print("fs_current_dir failed");
  * }
  * else
  * {
@@ -214,16 +214,16 @@ LIBFS_PUBLIC(void) fs_copy_file(const char* from, const char* to);
  * @param[in] size Buffer size
  * @return A pointer to buf if there is no error, NULL otherwise.
  */
-LIBFS_PUBLIC(char*) fs_current_path(char* buf, int size);
+LIBFS_PUBLIC(char*) fs_current_dir(char* buf, int size);
 
 /**
  * Concatenates two paths together with the platform specific separator.
  * 
  * @code{.c}
  * char cwd[MAX_PATH];
- * if (!fs_current_path(cwd, MAX_PATH))
+ * if (!fs_current_dir(cwd, MAX_PATH))
  * {
- *     print("fs_current_path failed");
+ *     print("fs_current_dir failed");
  *     return;
  * }
  * 
@@ -356,9 +356,9 @@ LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
  *
  * @code{.c}
  * char buf[MAX_PATH];
- * if (!fs_temp_directory_path(buf, MAX_PATH))
+ * if (!fs_temp_dir(buf, MAX_PATH))
  * {
- *     printf("fs_temp_directory_path failed");
+ *     printf("fs_temp_dir failed");
  * }
  * else
  * {
@@ -370,7 +370,7 @@ LIBFS_PUBLIC(void*) fs_read_file(const char* path, int* size);
  * @param[in] size Buffer size
  * @return A pointer to buf if there is no error, NULL otherwise.
  */
-LIBFS_PUBLIC(char*) fs_temp_directory_path(char* buf, int size);
+LIBFS_PUBLIC(char*) fs_temp_dir(char* buf, int size);
 
 /**
  * Struct used to iterate over a directory.

@@ -1,7 +1,7 @@
 .. -*- coding: utf-8 -*-
-.. _fs_current_path:
+.. _fs_current_dir:
 
-fs_current_path
+fs_current_dir
 ---------------
 
 .. module:: libfs
@@ -9,4 +9,4 @@ fs_current_path
 .. contents::
    :local:
       
-.. doxygenfunction:: fs_current_path
+.. doxygenfunction:: fs_current_dir
