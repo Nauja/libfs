@@ -55,6 +55,8 @@ while(fs_read_dir(it))
 fs_close_dir(it);
 ```
 
+Check the [documentation](https://libfs.readthedocs.io/en/latest/) to find more examples and learn about the API.
+
 ## Build Manually
 
 Copy the files [fs.c](fs.c) and [fs.h](fs.h) into an existing project.
