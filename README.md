@@ -3,14 +3,57 @@
 [![CI](https://github.com/Nauja/libfs/actions/workflows/CI.yml/badge.svg)](https://github.com/Nauja/libfs/actions/workflows/CI.yml)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Nauja/libfs/master/LICENSE)
 
-Portable filesystem API in ANSI C.
+libfs aims to be a portable (OSX/Linux/Windows) and lightweight filesystem API written in ANSI C.
 
-## Table of contents:
+## Examples
 
-- [Build Manually](#build-manually)
-- [Build with CMake](#build-with-cmake)
-- [Build with Visual Studio](#build-with-visual-studio)
-- [Usage](#usage)
+Get the current working directory:
+
+```c
+char cwd[MAX_PATH];
+fs_current_dir(&cwd, MAX_PATH);
+```
+
+Check if a file exists:
+
+```c
+char buf[MAX_PATH];
+fs_join_path(&buf, MAX_PATH, cwd, "foo.txt");
+if (!fs_exists(buf))
+{
+    printf("file not found: %s\n", buf);
+}
+```
+
+Read whole file content:
+
+```c
+int size;
+void* data = fs_read_file(buf, &size);
+if (data == NULL)
+{
+    printf("can't read file");
+}
+else
+{
+    printf("file size: %d\n", size);
+}
+
+free(data);
+```
+
+List a directory:
+
+```c
+struct fs_directory_iterator* it = fs_open_dir(cwd);
+
+while(fs_read_dir(it))
+{
+    prinf("%s", it->path);
+}
+
+fs_close_dir(it);
+```
 
 ## Build Manually
 
@@ -72,39 +115,6 @@ cmake .. -G "Visual Studio 16 2019"
 ```
 
 You can now open `build/libfs.sln` and compile the library.
-
-## Usage
-
-Get the current working directory:
-
-```c
-char cwd[MAX_PATH];
-fs_current_dir(&cwd, MAX_PATH);
-```
-
-Check if a file exists:
-
-```c
-char buf[MAX_PATH];
-fs_join_path(&buf, MAX_PATH, cwd, "foo.txt");
-if (!fs_exists(buf)) {
-  printf("file not found: %s\n", buf);
-}
-```
-
-Read whole file content:
-
-```c
-int size;
-void* data = fs_read_file(buf, &size);
-if (data == NULL) {
-  printf("can't read file");
-} else {
-  printf("file size: %d\n", size);
-}
-
-free(data);
-```
 
 ## License
 
