@@ -94,12 +94,16 @@ extern "C"
 #ifndef LIBFS_MALLOC
 #ifdef HAVE_MALLOC
 #define LIBFS_MALLOC malloc
+#else
+#define LIBFS_MALLOC(size) NULL
 #endif
 #endif
 
 #ifndef LIBFS_FREE
 #ifdef HAVE_FREE
 #define LIBFS_FREE free
+#else
+#define LIBFS_FREE(ptr)
 #endif
 #endif
 

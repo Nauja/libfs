@@ -205,10 +205,11 @@ void* fs_read_file(const char* path, int* size)
 	fseek(file, 0, SEEK_SET);
 
 	// Read file content
-	void* data = fs_global_hooks.malloc_fn(size);
+	void* data = fs_global_hooks.malloc_fn(length);
 	if (data) fread(data, length, 1, file);
 	fclose(file);
 
+	*size = length;
 	return data;
 }
 #endif
