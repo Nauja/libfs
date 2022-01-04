@@ -1,6 +1,7 @@
 # libfs
 
 [![CI](https://github.com/Nauja/libfs/actions/workflows/CI.yml/badge.svg)](https://github.com/Nauja/libfs/actions/workflows/CI.yml)
+[![Documentation Status](https://readthedocs.org/projects/libfs/badge/?version=latest)](https://libfs.readthedocs.io/en/latest/?badge=latest)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Nauja/libfs/master/LICENSE)
 
 libfs aims to be a portable (OSX/Linux/Windows) and lightweight filesystem API written in ANSI C.
