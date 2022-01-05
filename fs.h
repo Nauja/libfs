@@ -96,6 +96,11 @@ extern "C"
 #define HAVE_VSNPRINTF 1
 #endif
 
+/* Define to 1 if you build with Doxygen. */
+#ifndef LIBFS_DOXYGEN
+/* #undef LIBFS_DOXYGEN */
+#endif
+
 #ifdef HAVE_STDDEF_H
 /* Required for size_t */
 #include <stddef.h>
@@ -103,6 +108,18 @@ extern "C"
 
 #ifndef LIBFS_MALLOC
 #ifdef HAVE_MALLOC
+/**
+ * Defines the malloc function used by libfs at compile time.
+ *
+ * @code
+ * void* my_malloc(size_t size)
+ * {
+ *     // do something
+ * }
+ * 
+ * #define LIBFS_MALLOC my_malloc
+ * @endcode
+ */
 #define LIBFS_MALLOC malloc
 #else
 #define LIBFS_MALLOC(size) NULL
@@ -111,6 +128,18 @@ extern "C"
 
 #ifndef LIBFS_FREE
 #ifdef HAVE_FREE
+/**
+* Defines the free function used by libfs at compile time.
+*
+* @code 
+* void my_free(void* ptr)
+* {
+*     // do something
+* }
+* 
+* #define LIBFS_FREE my_free
+* @endcode
+*/
 #define LIBFS_FREE free
 #else
 #define LIBFS_FREE(ptr)
@@ -152,10 +181,10 @@ extern "C"
 struct fs_hooks
 {
     /** Custom malloc function. */
-    void* (LIBFS_CDECL *malloc_fn)(size_t size);
+    void* (LIBFS_CDECL* malloc_fn)(size_t size);
 
     /**  Custom free function. */
-    void (LIBFS_CDECL *free_fn)(void* ptr);
+    void (LIBFS_CDECL* free_fn)(void* ptr);
 };
 
 /**

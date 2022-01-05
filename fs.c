@@ -208,8 +208,15 @@ void* fs_read_file(const char* path, size_t* size)
 	fseek(file, 0, SEEK_SET);
 
 	// Read file content
-	void* data = _LIBFS_MALLOC(length);
-	if (data) fread(data, length, 1, file);
+	void* data = _LIBFS_MALLOC(length + 1);
+	if (!data)
+	{
+		fclose(file);
+		return NULL;
+	}
+
+	fread(data, length, 1, file);
+	((char*)data)[length] = '\0';
 	fclose(file);
 
 	*size = length;

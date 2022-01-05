@@ -7,6 +7,13 @@ Roadmap
 
 .. module:: libfs
 
+v0.2.0
+------
+
+  * Add a test API
+  * Fix missing null-terminating character with fs_read_file
+  * More documentation
+
 v0.1.0
 ------
 

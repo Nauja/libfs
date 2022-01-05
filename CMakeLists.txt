@@ -6,7 +6,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 set(PROJECT_VERSION_MAJOR 0)
 set(PROJECT_VERSION_MINOR 1)
-set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION_PATCH 1)
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
 #find_package(Git)
@@ -49,6 +49,10 @@ include(ConfigureChecks)
 option(WITH_STATIC_LIB "Build a static library" ON)
 option(UNIT_TESTING "Unit Tests Enabled" ON)
 option(DOXYGEN "Docs Enabled" OFF)
+
+if(DOXYGEN)
+set(LIBFS_DOXYGEN ${DOXYGEN})
+endif(DOXYGEN)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
