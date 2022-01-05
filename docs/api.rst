@@ -14,5 +14,9 @@ simple examples on how to use them.
    :maxdepth: 1
    :glob:
 
-   api/libfs_*
    api/fs_*
+   api/libfs_major_version
+   api/libfs_minor_version
+   api/libfs_patch_version
+   api/libfs_malloc
+   api/libfs_free

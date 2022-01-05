@@ -15,5 +15,5 @@ utility functions to help you write your own tests.
    :maxdepth: 1
    :glob:
 
-   test_api/libfs_*
    test_api/fs_*
+   test_api/libfs_*

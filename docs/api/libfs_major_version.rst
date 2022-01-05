@@ -1,0 +1,12 @@
+.. -*- coding: utf-8 -*-
+.. _libfs_major_version:
+
+LIBFS_VERSION_MAJOR
+-------------------
+
+.. module:: libfs
+
+.. contents::
+   :local:
+      
+.. doxygendefine:: LIBFS_VERSION_MAJOR
