@@ -149,6 +149,26 @@ static void test_make_dir(void** state) {
     fs_assert_non_exist(buf);
 }
 
+static void test_delete_file(void** state) {
+    char cwd[LIBFS_MAX_PATH];
+    fs_assert_current_dir(&cwd);
+
+    char buf[LIBFS_MAX_PATH];
+    fs_assert_join_path(&buf, cwd, DIRECTORY_OUTPUT);
+
+    fs_assert_make_dir(buf);
+    fs_assert_exist(buf);
+
+    char foo[LIBFS_MAX_PATH];
+    fs_assert_join_path(&foo, buf, "foo.txt");
+
+    const char* hello = "hello";
+    fs_assert_write_file(foo, hello, 5);
+    fs_assert_exist(foo);
+    fs_assert_delete_file(foo);
+    fs_assert_non_exist(foo);
+}
+
 static void test_read_unknown_dir(void** state) {
     fs_directory_iterator* it = fs_open_dir("invalid dir");
     assert_null(it);
@@ -172,6 +192,7 @@ int main(void) {
         cmocka_unit_test(test_read_file),
         cmocka_unit_test(test_read_dir),
         cmocka_unit_test(test_make_dir),
+        cmocka_unit_test(test_delete_file),
         cmocka_unit_test(test_read_unknown_dir),
         cmocka_unit_test(test_hooks)
     };

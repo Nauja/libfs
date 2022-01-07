@@ -63,6 +63,11 @@ static void _fs_delete_dir(const char* path)
     assert_true(fs_delete_dir(path));
 }
 
+static void _fs_delete_file(const char* path)
+{
+    assert_true(fs_delete_file(path));
+}
+
 static void* _fs_read_file(const char* path, size_t* size)
 {
     void* buf = fs_read_file(path, size);
@@ -154,6 +159,15 @@ void fs_assert_delete_dir(const char* path)
 }
 
 /**
+ * Asserts that fs_delete_file doesn't fail.
+ * @param[in] path Some null-terminated path
+ */
+void fs_assert_delete_file(const char* path)
+{
+    _fs_delete_file(path);
+}
+
+/**
  * Asserts that fs_read_dir doesn't fail.
  * @param[in] path Some null-terminated path to existing file
  * @param[out] size Number of bytes read
@@ -183,6 +197,7 @@ void fs_assert_write_file(const char* path, const void* buf, size_t size)
 #define fs_assert_read_dir(it) _fs_read_dir(it)
 #define fs_assert_make_dir(path) _fs_make_dir(path)
 #define fs_assert_delete_dir(path) _fs_delete_dir(path)
+#define fs_assert_delete_file(path) _fs_delete_file(path)
 #define fs_assert_read_file(path, size) _fs_read_file(path, size)
 #define fs_assert_write_file(path, buf, size) _fs_write_file(path, buf, size)
 #endif

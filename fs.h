@@ -457,6 +457,20 @@ LIBFS_PUBLIC(char*) fs_temp_dir(char* buf, size_t size);
 LIBFS_PUBLIC(int) fs_delete_dir(const char* path);
 
 /**
+ * Deletes a file if it exists.
+ *
+ * @code
+ * if (!fs_delete_file("foo.txt"))
+ * {
+ *     printf("fs_delete_file failed");
+ * }
+ * @endcode
+ * @param[in] path Some null-terminated path
+ * @return If the file was deleted.
+ */
+LIBFS_PUBLIC(int) fs_delete_file(const char* path);
+
+/**
  * Creates a directory if it doesn't exist.
  *
  * The parent directory must exist as it will not

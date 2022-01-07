@@ -269,6 +269,16 @@ int fs_delete_dir(const char* path)
 	return LIBFS_TRUE;
 }
 
+int fs_delete_file(const char* path)
+{
+	if (DeleteFile(path) == 0)
+	{
+		return ERROR_FILE_NOT_FOUND == GetLastError();
+	}
+
+	return LIBFS_TRUE;
+}
+
 int fs_make_dir(const char* path)
 {
 	if (CreateDirectory(path, NULL) == 0)
@@ -297,6 +307,13 @@ char* fs_temp_dir(char* buf, size_t size)
 int fs_delete_dir(const char* path)
 {
 	return (rmdir(path) == 0) || (ENOENT == errno);
+}
+#endif
+
+#ifdef HAVE_STDIO_H
+int fs_delete_file(const char* path)
+{
+	return (remove(path) == 0) || (ENOENT == errno);
 }
 #endif
 
