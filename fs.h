@@ -11,7 +11,7 @@ extern "C"
 /** Minor version of libfs. */
 #define LIBFS_VERSION_MINOR 1
 /** Patch version of libfs. */
-#define LIBFS_VERSION_PATCH 1
+#define LIBFS_VERSION_PATCH 2
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #ifndef HAVE_DIRENT_H
@@ -504,7 +504,7 @@ LIBFS_PUBLIC(int) fs_make_dir(const char* path);
 struct fs_directory_iterator
 {
     /** Path to file. */
-	const char* path;
+    const char* path;
 };
 
 /**

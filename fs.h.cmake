@@ -504,7 +504,7 @@ LIBFS_PUBLIC(int) fs_make_dir(const char* path);
 struct fs_directory_iterator
 {
     /** Path to file. */
-	const char* path;
+    const char* path;
 };
 
 /**
