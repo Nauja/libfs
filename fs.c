@@ -26,6 +26,7 @@
 #include <strsafe.h>
 #endif
 
+#define LIBFS_FALSE 0
 #define LIBFS_TRUE 1
 
 typedef struct fs_hooks fs_hooks;
@@ -146,7 +147,7 @@ char* fs_current_dir(char* buf, size_t size)
 #endif
 
 #if HAVE_SYS_STAT_H
-int fs_exists(const char* path)
+int fs_exist(const char* path)
 {
 	struct stat s;
 	return stat(path, &s) == 0;
@@ -222,6 +223,19 @@ void* fs_read_file(const char* path, size_t* size)
 	*size = length;
 	return data;
 }
+
+int fs_write_file(const char* path, const void* buf, size_t size)
+{
+	FILE* file = fopen(path, "wb");
+	if (!file)
+	{
+		return LIBFS_FALSE;
+	}
+
+	fwrite(buf, size, 1, file);
+	fclose(file);
+	return LIBFS_TRUE;
+}
 #endif
 
 #ifdef HAVE_STRING_H
@@ -241,7 +255,28 @@ char* fs_temp_dir(char* buf, size_t size)
 
 	return buf;
 }
-#elif defined(HAVE_STDLIB_H)
+
+int fs_delete_dir(const char* path)
+{
+	if (RemoveDirectory(path) == 0)
+	{
+		return ERROR_FILE_NOT_FOUND == GetLastError();
+	}
+
+	return LIBFS_TRUE;
+}
+
+int fs_make_dir(const char* path)
+{
+	if (CreateDirectory(path, NULL) == 0)
+	{
+		return ERROR_ALREADY_EXISTS == GetLastError();
+	}
+
+	return LIBFS_TRUE;
+}
+#else /* !HAVE_WINDOWS_H */
+#if defined(HAVE_STDLIB_H)
 char* fs_temp_dir(char* buf, size_t size)
 {
 	const char* path = getenv("TMPDIR");
@@ -254,6 +289,21 @@ char* fs_temp_dir(char* buf, size_t size)
 	return buf;
 }
 #endif
+
+#ifdef HAVE_UNISTD_H
+int fs_delete_dir(const char* path)
+{
+	return (rmdir(path) == 0) || (ENOENT == errno);
+}
+#endif
+
+#ifdef HAVE_SYS_STAT_H
+int fs_make_dir(const char* path)
+{
+	return (mkdir(path) == 0) || (EEXIST == errno);
+}
+#endif
+#endif /* HAVE_WINDOWS_H */
 
 #if defined(HAVE_WINDOWS_H)
 typedef struct fs_win_directory_iterator

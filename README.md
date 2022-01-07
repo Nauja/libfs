@@ -21,7 +21,7 @@ Check if a file exists:
 ```c
 char buf[MAX_PATH];
 fs_join_path(&buf, MAX_PATH, cwd, "foo.txt");
-if (!fs_exists(buf))
+if (!fs_exist(buf))
 {
     printf("file not found: %s\n", buf);
 }

@@ -7,6 +7,7 @@
 #include "fs_testutils.h"
 
 #define DIRECTORY_DATA "data"
+#define DIRECTORY_OUTPUT "output"
 #define FILE_HELLO "data/hello.txt"
 #define FILE_UNKNOWN "unknown"
 
@@ -40,11 +41,11 @@ static void test_exists(void** state) {
 
     char buf[LIBFS_MAX_PATH];
     fs_assert_join_path(&buf, cwd, DIRECTORY_DATA);
-    assert_true(fs_exists(buf));
+    assert_true(fs_exist(buf));
     fs_assert_join_path(&buf, cwd, FILE_HELLO);
-    assert_true(fs_exists(buf));
+    assert_true(fs_exist(buf));
     fs_assert_join_path(&buf, cwd, FILE_UNKNOWN);
-    assert_false(fs_exists(buf));
+    assert_false(fs_exist(buf));
 }
 
 static void test_file_size(void** state) {
@@ -133,6 +134,21 @@ static void test_read_dir(void** state) {
     fs_close_dir(it);
 }
 
+static void test_make_dir(void** state) {
+    char cwd[LIBFS_MAX_PATH];
+    fs_assert_current_dir(&cwd);
+
+    char buf[LIBFS_MAX_PATH];
+    fs_assert_join_path(&buf, cwd, DIRECTORY_OUTPUT);
+
+    fs_assert_delete_dir(buf);
+    fs_assert_non_exist(buf);
+    fs_assert_make_dir(buf);
+    fs_assert_exist(buf);
+    fs_assert_delete_dir(buf);
+    fs_assert_non_exist(buf);
+}
+
 static void test_read_unknown_dir(void** state) {
     fs_directory_iterator* it = fs_open_dir("invalid dir");
     assert_null(it);
@@ -155,6 +171,7 @@ int main(void) {
         cmocka_unit_test(test_read_unknown_file),
         cmocka_unit_test(test_read_file),
         cmocka_unit_test(test_read_dir),
+        cmocka_unit_test(test_make_dir),
         cmocka_unit_test(test_read_unknown_dir),
         cmocka_unit_test(test_hooks)
     };

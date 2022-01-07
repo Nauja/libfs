@@ -10,6 +10,8 @@ Roadmap
 v0.2.0
 ------
 
+  * Add fs_make_dir fs_delete_dir fs_write_file
+  * Rename fs_exists to fs_exist
   * Add a test API
   * Fix missing null-terminating character with fs_read_file
   * More documentation

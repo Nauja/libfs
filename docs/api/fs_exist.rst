@@ -1,7 +1,7 @@
 .. -*- coding: utf-8 -*-
-.. _fs_exists:
+.. _fs_exist:
 
-fs_exists
+fs_exist
 ---------
 
 .. module:: libfs
@@ -9,4 +9,4 @@ fs_exists
 .. contents::
    :local:
       
-.. doxygenfunction:: fs_exists
+.. doxygenfunction:: fs_exist

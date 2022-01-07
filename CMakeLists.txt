@@ -42,7 +42,7 @@ if(Git_FOUND)
     endif()
 endif()
 
-project(libfs VERSION ${PROJECT_VERSION} LANGUAGES C)
+project(libfs VERSION ${LIBFS_VERSION} LANGUAGES C)
 
 include(ConfigureChecks)
 
@@ -59,7 +59,7 @@ include(MacroEnsureOutOfSourceBuild)
 macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build. Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME} [options]' there.")
 
 message("Building for target : ${CMAKE_SYSTEM_NAME}")
-message("PROJECT_VERSION: ${PROJECT_VERSION}")
+message("PROJECT_VERSION: ${LIBFS_VERSION}")
 message("VERSION_HASH: ${VERSION_HASH}")
 configure_file(fs.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/fs.h)
 
