@@ -4,6 +4,7 @@
 #include <dirent.h>
 #endif
 #ifdef HAVE_SYS_STAT_H
+#include <errno.h>
 #include <sys/stat.h>
 #endif
 #ifdef HAVE_SYS_SENDFILE_H
@@ -16,6 +17,7 @@
 #include <stdio.h>
 #endif
 #ifdef HAVE_UNISTD_H
+#include <errno.h>
 #include <unistd.h>
 #endif
 #ifdef HAVE_STRING_H
@@ -28,6 +30,7 @@
 
 #define LIBFS_FALSE 0
 #define LIBFS_TRUE 1
+#define LIBFS_MKDIR_PERMISSIONS 0700
 
 typedef struct fs_hooks fs_hooks;
 typedef struct fs_directory_iterator fs_directory_iterator;
@@ -300,7 +303,7 @@ int fs_delete_dir(const char* path)
 #ifdef HAVE_SYS_STAT_H
 int fs_make_dir(const char* path)
 {
-	return (mkdir(path) == 0) || (EEXIST == errno);
+	return (mkdir(path, LIBFS_MKDIR_PERMISSIONS) == 0) || (EEXIST == errno);
 }
 #endif
 #endif /* HAVE_WINDOWS_H */
