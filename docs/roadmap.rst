@@ -7,7 +7,7 @@ Roadmap
 
 .. module:: libfs
 
-v0.2.0
+v0.1.1
 ------
 
   * Add fs_make_dir fs_delete_dir fs_write_file fs_delete_file
