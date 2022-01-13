@@ -175,7 +175,7 @@ void fs_assert_delete_file(const char* path)
  */
 void* fs_assert_read_file(const char* path, size_t* size)
 {
-    return _fs_read_dir(path, size);
+    return _fs_read_file(path, size);
 }
 
 /**
