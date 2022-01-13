@@ -11,6 +11,7 @@ v0.1.2
 ------
 
   * Rename:
+  
     * LIBFS_STATIC_LIB to LIBFS_STATIC
     * UNIT_TESTING to LIBFS_UNIT_TESTING
     * DOXYGEN to LIBFS_DOXYGEN
