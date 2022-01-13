@@ -16,7 +16,7 @@ ExternalProject_Add(cmocka
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DHAVE_SNPRINTF=${HAVE_SNPRINTF}
         -DHAVE_VSNPRINTF=${HAVE_VSNPRINTF}
-        -DLIBFS_STATIC=true
+        -DWITH_STATIC_LIB=true
 )
 ExternalProject_Get_Property(cmocka source_dir binary_dir)
 
