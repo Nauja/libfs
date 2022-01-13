@@ -12,13 +12,13 @@ Those are more advanced usages for experienced users.
 Build as a Static Library with CMake
 ------------------------------------
 
-You can build libfs as a static library by passing ``-DWITH_STATIC_LIB=true`` as an argument to cmake:
+You can build libfs as a static library by passing ``-DLIBFS_STATIC=true`` as an argument to cmake:
 
 .. code-block::
 
     mkdir build
     cd build
-    cmake .. -DWITH_STATIC_LIB=true
+    cmake .. -DLIBFS_STATIC=true
     cmake --build .
     make
 
@@ -48,7 +48,7 @@ Now you can build the documentation with:
 
     mkdir build
     cd build
-    cmake .. -DDOXYGEN=true
+    cmake .. -DLIBFS_DOXYGEN=true
     cmake --build .
     make
 

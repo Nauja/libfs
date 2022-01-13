@@ -46,13 +46,9 @@ project(libfs VERSION ${LIBFS_VERSION} LANGUAGES C)
 
 include(ConfigureChecks)
 
-option(WITH_STATIC_LIB "Build a static library" ON)
-option(UNIT_TESTING "Unit Tests Enabled" ON)
-option(DOXYGEN "Docs Enabled" OFF)
-
-if(DOXYGEN)
-set(LIBFS_DOXYGEN ${DOXYGEN})
-endif(DOXYGEN)
+option(LIBFS_STATIC "Build a static library" ON)
+option(LIBFS_UNIT_TESTING "Unit Tests Enabled" ON)
+option(LIBFS_DOXYGEN "Docs Enabled" OFF)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -80,7 +76,7 @@ target_include_directories(${LIBFS_LIB}
                                 ${CMAKE_CURRENT_BINARY_DIR}
                             PUBLIC
                                 ${CMAKE_CURRENT_SOURCE_DIR})
-if (WITH_STATIC_LIB)
+if (LIBFS_STATIC)
     
     set(LIBFS_STATIC_LIB "${LIBFS_LIB}-static")
 
@@ -102,17 +98,17 @@ if (WITH_STATIC_LIB)
 endif()
 
 # include cmocka
-if (UNIT_TESTING)
-    if (NOT WITH_STATIC_LIB)
-        message("Skip unit testing because WITH_STATIC_LIB option is off")
+if (LIBFS_UNIT_TESTING)
+    if (NOT LIBFS_STATIC)
+        message("Skip unit testing because LIBFS_STATIC option is off")
 
     else()
         include(AddCMockaTest) 
         add_subdirectory(tests)
 
-    endif(NOT WITH_STATIC_LIB)
-endif (UNIT_TESTING)
+    endif(NOT LIBFS_STATIC)
+endif (LIBFS_UNIT_TESTING)
 
-if (DOXYGEN)
+if (LIBFS_DOXYGEN)
     add_subdirectory ("docs")
-endif (DOXYGEN)
+endif (LIBFS_DOXYGEN)

@@ -30,7 +30,7 @@ jobs:
     - name: build docs
       shell: bash
       run: |
-          EVENT_CMAKE_OPTIONS="-DOXYGEN=ON"
+          EVENT_CMAKE_OPTIONS="-LIBFS_DOXYGEN=ON"
           mkdir -p build
           cd build
           echo [cmake]: cmake .. $EVENT_CMAKE_OPTIONS

@@ -67,13 +67,19 @@ Comment or uncomment the defines at the top of `fs.h` depending on your configur
 
 ```c
 /* Define to 1 if you have the <stdio.h> header file. */
+#ifndef HAVE_STDIO_H
 #define HAVE_STDIO_H 1
+#endif
 
 /* Define to 1 if you have the <stdlib.h> header file. */
+#ifndef HAVE_STDLIB_H
 #define HAVE_STDLIB_H 1
+#endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
+#ifndef HAVE_SYS_STAT_H
 #define HAVE_SYS_STAT_H 1
+#endif
 
 ...
 ```
@@ -105,9 +111,9 @@ make
 This will generate `libfs.a` if building as a static library and `liblibfs.so` in the `build` directory.
 
 You can change the build process with a list of different options that you can pass to CMake. Turn them on with `On` and off with `Off`:
-  * `-DWITH_STATIC_LIB=On`: Enable building as static library. (on by default)
-  * `-DUNIT_TESTING=On`: Enable building the tests. (on by default)
-  * `-DDOXYGEN=On`: Enable building the docs. (off by default)
+  * `-DLIBFS_STATIC=On`: Enable building as static library. (on by default)
+  * `-DLIBFS_UNIT_TESTING=On`: Enable building the tests. (on by default)
+  * `-DLIBFS_DOXYGEN=On`: Enable building the docs. (off by default)
 
 ## Build with Visual Studio
 

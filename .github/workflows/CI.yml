@@ -80,7 +80,7 @@ jobs:
     - name: build cmocka
       shell: bash
       run: |
-          EVENT_CMAKE_OPTIONS="-DWITH_STATIC_LIB=ON"
+          EVENT_CMAKE_OPTIONS="-DLIBFS_STATIC=ON"
           cd vendor/cmocka
           mkdir -p build
           cd build
