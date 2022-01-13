@@ -6,6 +6,7 @@ include(ExternalProject)
 set(CMOCKA_SOURCE_DIR "${CMAKE_SOURCE_DIR}/vendor/cmocka")
 set(CMOCKA_INCLUDE_DIR "${CMOCKA_SOURCE_DIR}/include")
 set(CMOCKA_BINARY_DIR "${CMOCKA_SOURCE_DIR}/build")
+set(WITH_STATIC_LIB ${LIBFS_STATIC})
 
 ExternalProject_Add(cmocka
   PREFIX cmocka
