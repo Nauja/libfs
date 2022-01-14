@@ -12,9 +12,7 @@ Welcome to libfs's documentation!
 
    intro
    examples
-   api
-   test_api
-   roadmap
+   changelog
 
 .. toctree::
    :maxdepth: 1
