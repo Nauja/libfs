@@ -24,8 +24,8 @@ jobs:
     - name: install docs dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y doxygen graphviz python3-sphinx python3-pip
-        pip install breathe
+        sudo apt-get install -y doxygen graphviz python3-pip
+        pip install breathe sphinx
         pip install -r docs/requirements.txt
     - name: build docs
       shell: bash
