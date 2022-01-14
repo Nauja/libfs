@@ -16,6 +16,21 @@ Welcome to libfs's documentation!
    test_api
    roadmap
 
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference:
+
+   api/functions
+   api/structures
+   api/defines
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Test API Reference:
+
+   test_api/functions
+   test_api/defines
+
 
 Indices and tables
 ==================

@@ -1,14 +1,19 @@
 .. -*- coding: utf-8 -*-
-.. _roadmap:
+.. _changelog:
 
-=======
-Roadmap
-=======
+=========
+Changelog
+=========
 
 .. module:: libfs
 
-v0.1.2
+v0.1.3
 ------
+
+  * Better organize doc
+
+v0.1.2 (Jan 13, 2022)
+---------------------
 
   * Rename:
   
@@ -16,8 +21,8 @@ v0.1.2
     * UNIT_TESTING to LIBFS_UNIT_TESTING
     * DOXYGEN to LIBFS_DOXYGEN
 
-v0.1.1
-------
+v0.1.1 (Jan 7, 2022)
+--------------------
 
   * Add fs_make_dir fs_delete_dir fs_write_file fs_delete_file
   * Rename fs_exists to fs_exist
@@ -25,8 +30,8 @@ v0.1.1
   * Fix missing null-terminating character with fs_read_file
   * More documentation
 
-v0.1.0
-------
+v0.1.0 (Jan 4, 2022)
+--------------------
 
   * Stable API
   * Continuous integration
