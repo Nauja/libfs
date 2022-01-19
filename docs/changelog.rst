@@ -12,6 +12,7 @@ v0.1.3
 
   * Better organize doc
   * Fixed a warning with implicit cast from fs_posix_directory_iterator to fs_directory_iterator
+  * Add missing stdarg.h include before cmocka.h
 
 v0.1.2 (Jan 13, 2022)
 ---------------------
