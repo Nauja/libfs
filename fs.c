@@ -394,7 +394,7 @@ struct fs_directory_iterator* fs_open_dir(const char* path)
 		return NULL;
 	}
 
-	return it;
+	return (fs_directory_iterator*)it;
 }
 
 struct fs_directory_iterator* fs_read_dir(struct fs_directory_iterator* it)
@@ -406,7 +406,7 @@ struct fs_directory_iterator* fs_read_dir(struct fs_directory_iterator* it)
 	}
 
 	_it->base.path = &_it->ent->d_name[0];
-	return _it;
+	return (fs_directory_iterator*)_it;
 }
 
 void fs_close_dir(struct fs_directory_iterator* it)
