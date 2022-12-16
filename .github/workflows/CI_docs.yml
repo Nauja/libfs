@@ -2,38 +2,30 @@ name: CI docs
 
 on:
   push:
-    branches: [ main ]
     paths-ignore:
-      - '**.md'
-      - 'LICENSE'
+      - "LICENSE"
   pull_request:
-    types: [opened, synchronize]
     paths-ignore:
-      - '**.md'
-      - 'LICENSE'
+      - "LICENSE"
 
 jobs:
   linux:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-        fetch-depth: 1000
-    - name: install docs dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y doxygen graphviz python3-pip
-        pip install breathe sphinx
-        pip install -r docs/requirements.txt
-    - name: build docs
-      shell: bash
-      run: |
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz python3-pip
+          pip install breathe sphinx
+          pip install -r docs/requirements.txt
+      - name: Build docs
+        run: |
           EVENT_CMAKE_OPTIONS="-DLIBFS_DOXYGEN=ON"
           mkdir -p build
           cd build
-          echo [cmake]: cmake .. $EVENT_CMAKE_OPTIONS
           cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
           cmake --build .
           make

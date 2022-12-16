@@ -2,114 +2,142 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
     paths-ignore:
-      - '**.md'
-      - 'LICENSE'
+      - "**.md"
+      - "LICENSE"
   pull_request:
-    types: [opened, synchronize]
     paths-ignore:
-      - '**.md'
-      - 'LICENSE'
+      - "**.md"
+      - "LICENSE"
 
 jobs:
-  linux:
+  amd64_linux_clang:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
-    strategy:
-      fail-fast: false
-      matrix:
-        mem_check:
-          - ENABLE_VALGRIND
-          - ENABLE_SANITIZERS
-          - NONE_MEM_CHECK
-        compiler:
-          - GCC
-          - CLANG
+    env:
+      CC: clang
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-        fetch-depth: 1000
-    - name: install build dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install clang-8 valgrind
-    - name: build and test
-      shell: bash
-      run: |
-          if [ "${{ matrix.mem_check }}" == "ENABLE_VALGRIND" ]; then
-            EVENT_CMAKE_OPTIONS="-DENABLE_VALGRIND=ON -DENABLE_SAFE_STACK=ON -DENABLE_SANITIZERS=OFF"
-          elif [ "${{ matrix.mem_check }}" == "ENABLE_SANITIZERS" ]; then
-            EVENT_CMAKE_OPTIONS="-DENABLE_VALGRIND=OFF -DENABLE_SAFE_STACK=OFF -DENABLE_SANITIZERS=ON"
-          else
-            EVENT_CMAKE_OPTIONS="-DENABLE_VALGRIND=OFF -DENABLE_SAFE_STACK=OFF -DENABLE_SANITIZERS=OFF"
-          fi
-          if [ "${{ matrix.compiler }}" == "GCC" ]; then
-            export CC=gcc
-          else
-            export CC=clang
-          fi
-          #run build and test
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: sudo apt install -y make clang
+      - run: clang --version
+      - name: Build libfs
+        run: |
           mkdir -p build
           cd build
-          echo [cmake]: cmake .. $EVENT_CMAKE_OPTIONS
-          cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
+          cmake ..
           cmake --build .
-          make
-          make test ARGS="-V"
-          
-  macos:
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target test ARGS="-V"
+  amd64_linux_gcc:
+    runs-on: ubuntu-latest
+    env:
+      CC: gcc
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: sudo apt install -y make gcc
+      - run: gcc --version
+      - name: Build libfs
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          cmake --build .
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target test ARGS="-V"
+  amd64_macos_clang:
     runs-on: macos-latest
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
-    strategy:
-      fail-fast: false
-      matrix:
-        mem_check:
-          - ENABLE_VALGRIND
-          - ENABLE_SANITIZERS
-          - NONE_MEM_CHECK
-        compiler:
-          - GCC
-          - CLANG
+    env:
+      CC: clang
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-        fetch-depth: 1000
-    - name: build cmocka
-      shell: bash
-      run: |
-          EVENT_CMAKE_OPTIONS="-DWITH_STATIC_LIB=ON"
-          cd vendor/cmocka
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - run: cc --version
+      - name: Build libfs
+        run: |
           mkdir -p build
           cd build
-          echo [cmake]: cmake .. $EVENT_CMAKE_OPTIONS
-          cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
+          cmake ..
           cmake --build .
-          make
-          ls -l src
-          ls -l ../src
-    - name: build and test
-      shell: bash
-      run: |
-          if [ "${{ matrix.mem_check }}" == "ENABLE_VALGRIND" ]; then
-            EVENT_CMAKE_OPTIONS="-DENABLE_VALGRIND=ON -DENABLE_SAFE_STACK=ON -DENABLE_SANITIZERS=OFF"
-          elif [ "${{ matrix.mem_check }}" == "ENABLE_SANITIZERS" ]; then
-            EVENT_CMAKE_OPTIONS="-DENABLE_VALGRIND=OFF -DENABLE_SAFE_STACK=OFF -DENABLE_SANITIZERS=ON"
-          else
-            EVENT_CMAKE_OPTIONS="-DENABLE_VALGRIND=OFF -DENABLE_SAFE_STACK=OFF -DENABLE_SANITIZERS=OFF"
-          fi
-          if [ "${{ matrix.compiler }}" == "GCC" ]; then
-            export CC=gcc
-          else
-            export CC=clang
-          fi
-          #run build and test
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target test ARGS="-V"
+  amd64_macos_gcc:
+    runs-on: macos-latest
+    env:
+      CC: gcc-11
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: brew install gcc@11
+      - run: gcc-11 --version
+      - name: Build libfs
+        run: |
           mkdir -p build
           cd build
-          echo [cmake]: cmake .. $EVENT_CMAKE_OPTIONS
-          cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
+          cmake ..
           cmake --build .
-          make
-          make test ARGS="-V"
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target test ARGS="-V"
+  amd64_windows_clang:
+    runs-on: windows-2019
+    env:
+      CC: clang
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - run: echo "C:\\msys64\\usr\\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Install Dependencies
+        run: |
+          pacman --version
+          pacman -Sy
+          pacman --noconfirm -S pacman-mirrors
+          pacman --noconfirm -S mingw64/mingw-w64-x86_64-clang
+          echo "C:\\msys64\\mingw64\\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - run: clang --version
+      - name: Build libfs
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -G "MinGW Makefiles"
+          cmake --build .
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target test ARGS="-V"
+  amd64_windows_gcc:
+    runs-on: windows-2019
+    env:
+      CC: gcc
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: echo "C:\\msys64\\usr\\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - run: gcc --version
+      - name: Build libfs
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -G "MinGW Makefiles"
+          cmake --build .
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target test ARGS="-V"

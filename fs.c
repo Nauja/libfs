@@ -37,12 +37,12 @@ typedef struct fs_directory_iterator fs_directory_iterator;
 
 #if defined(_MSC_VER)
 /* work around MSVC error C2322: '...' address of dllimport '...' is not static */
-static void* LIBFS_CDECL internal_malloc(size_t size)
+static void *LIBFS_CDECL internal_malloc(size_t size)
 {
 	return LIBFS_MALLOC(size);
 }
 
-static void LIBFS_CDECL internal_free(void* pointer)
+static void LIBFS_CDECL internal_free(void *pointer)
 {
 	LIBFS_FREE(pointer);
 }
@@ -53,10 +53,10 @@ static void LIBFS_CDECL internal_free(void* pointer)
 
 static fs_hooks fs_global_hooks = {
 	internal_malloc,
-	internal_free
-};
+	internal_free};
 
-void fs_init_hooks(struct fs_hooks* hooks)
+LIBFS_PUBLIC(void)
+fs_init_hooks(fs_hooks *hooks)
 {
 	fs_global_hooks.malloc_fn = hooks->malloc_fn;
 	fs_global_hooks.free_fn = hooks->free_fn;
@@ -66,7 +66,8 @@ void fs_init_hooks(struct fs_hooks* hooks)
 #define _LIBFS_FREE fs_global_hooks.free_fn
 
 #if HAVE_WINDOWS_H
-char* fs_absolute(const char* path, char* buf, size_t size)
+LIBFS_PUBLIC(char *)
+fs_absolute(const char *path, char *buf, size_t size)
 {
 	if (!GetFullPathName(path, (DWORD)size, buf, NULL))
 	{
@@ -76,18 +77,21 @@ char* fs_absolute(const char* path, char* buf, size_t size)
 	return buf;
 }
 
-void fs_copy(const char* from, const char* to)
+LIBFS_PUBLIC(void)
+fs_copy(const char *from, const char *to)
 {
 	fs_copy_file(from, to);
 }
 
-void fs_copy_file(const char* from, const char* to)
+LIBFS_PUBLIC(void)
+fs_copy_file(const char *from, const char *to)
 {
 	CopyFile(from, to, 0);
 }
 #else
 #if HAVE_STDLIB_H
-char* fs_absolute(const char* path, char* buf, size_t size)
+LIBFS_PUBLIC(char *)
+fs_absolute(const char *path, char *buf, size_t size)
 {
 	if (!realpath(path, buf))
 	{
@@ -99,20 +103,22 @@ char* fs_absolute(const char* path, char* buf, size_t size)
 #endif
 
 #if HAVE_SENDFILE_H
-void fs_copy(const char* from, const char* to)
+LIBFS_PUBLIC(void)
+fs_copy(const char *from, const char *to)
 {
 	fs_copy_file(from, to);
 }
 
-void fs_copy_file(const char* from, const char* to)
+LIBFS_PUBLIC(void)
+fs_copy_file(const char *from, const char *to)
 {
-	FILE* ffrom = fopen(from, "rb");
+	FILE *ffrom = fopen(from, "rb");
 	if (!ffrom)
 	{
 		return;
 	}
 
-	FILE* fto = fopen(to, "wb");
+	FILE *fto = fopen(to, "wb");
 	if (!fto)
 	{
 		return;
@@ -131,7 +137,8 @@ void fs_copy_file(const char* from, const char* to)
 #endif
 
 #ifdef HAVE_WINDOWS_H
-char* fs_current_dir(char* buf, size_t size)
+LIBFS_PUBLIC(char *)
+fs_current_dir(char *buf, size_t size)
 {
 	if (GetCurrentDirectory((DWORD)size, buf))
 	{
@@ -142,7 +149,8 @@ char* fs_current_dir(char* buf, size_t size)
 }
 #else
 #ifdef HAVE_UNISTD_H
-char* fs_current_dir(char* buf, size_t size)
+LIBFS_PUBLIC(char *)
+fs_current_dir(char *buf, size_t size)
 {
 	return getcwd(buf, size);
 }
@@ -150,25 +158,29 @@ char* fs_current_dir(char* buf, size_t size)
 #endif
 
 #if HAVE_SYS_STAT_H
-int fs_exist(const char* path)
+LIBFS_PUBLIC(int)
+fs_exist(const char *path)
 {
 	struct stat s;
 	return stat(path, &s) == 0;
 }
 
-int fs_is_directory(const char* path)
+LIBFS_PUBLIC(int)
+fs_is_directory(const char *path)
 {
 	struct stat s;
 	return (stat(path, &s) == 0) && (s.st_mode & S_IFDIR);
 }
 
-int fs_is_file(const char* path)
+LIBFS_PUBLIC(int)
+fs_is_file(const char *path)
 {
 	struct stat s;
 	return (stat(path, &s) == 0) && (s.st_mode & S_IFREG);
 }
 
-int fs_is_symlink(const char* path)
+LIBFS_PUBLIC(int)
+fs_is_symlink(const char *path)
 {
 #ifndef HAVE_WINDOWS_H
 	struct stat s;
@@ -180,9 +192,10 @@ int fs_is_symlink(const char* path)
 #endif
 
 #ifdef HAVE_STDIO_H
-size_t fs_file_size(const char* path)
+LIBFS_PUBLIC(size_t)
+fs_file_size(const char *path)
 {
-	FILE* file = fopen(path, "rb");
+	FILE *file = fopen(path, "rb");
 	if (!file)
 	{
 		return -1L;
@@ -198,9 +211,10 @@ size_t fs_file_size(const char* path)
 	return stat.st_size;
 }
 
-void* fs_read_file(const char* path, size_t* size)
+LIBFS_PUBLIC(void *)
+fs_read_file(const char *path, size_t *size)
 {
-	FILE* file = fopen(path, "rb");
+	FILE *file = fopen(path, "rb");
 	if (!file)
 	{
 		return NULL;
@@ -212,7 +226,7 @@ void* fs_read_file(const char* path, size_t* size)
 	fseek(file, 0, SEEK_SET);
 
 	// Read file content
-	void* data = _LIBFS_MALLOC(length + 1);
+	void *data = _LIBFS_MALLOC(length + 1);
 	if (!data)
 	{
 		fclose(file);
@@ -220,16 +234,17 @@ void* fs_read_file(const char* path, size_t* size)
 	}
 
 	fread(data, length, 1, file);
-	((char*)data)[length] = '\0';
+	((char *)data)[length] = '\0';
 	fclose(file);
 
 	*size = length;
 	return data;
 }
 
-int fs_write_file(const char* path, const void* buf, size_t size)
+LIBFS_PUBLIC(int)
+fs_write_file(const char *path, const void *buf, size_t size)
 {
-	FILE* file = fopen(path, "wb");
+	FILE *file = fopen(path, "wb");
 	if (!file)
 	{
 		return LIBFS_FALSE;
@@ -242,14 +257,16 @@ int fs_write_file(const char* path, const void* buf, size_t size)
 #endif
 
 #ifdef HAVE_STRING_H
-size_t fs_join_path(char* buf, size_t size, const char* left, const char* right)
+LIBFS_PUBLIC(size_t)
+fs_join_path(char *buf, size_t size, const char *left, const char *right)
 {
 	return snprintf(buf, size, "%s/%s", left, right);
 }
 #endif
 
 #if defined(HAVE_WINDOWS_H)
-char* fs_temp_dir(char* buf, size_t size)
+LIBFS_PUBLIC(char *)
+fs_temp_dir(char *buf, size_t size)
 {
 	if (!GetTempPath((DWORD)size, buf))
 	{
@@ -259,7 +276,8 @@ char* fs_temp_dir(char* buf, size_t size)
 	return buf;
 }
 
-int fs_delete_dir(const char* path)
+LIBFS_PUBLIC(int)
+fs_delete_dir(const char *path)
 {
 	if (RemoveDirectory(path) == 0)
 	{
@@ -269,7 +287,8 @@ int fs_delete_dir(const char* path)
 	return LIBFS_TRUE;
 }
 
-int fs_delete_file(const char* path)
+LIBFS_PUBLIC(int)
+fs_delete_file(const char *path)
 {
 	if (DeleteFile(path) == 0)
 	{
@@ -279,7 +298,8 @@ int fs_delete_file(const char* path)
 	return LIBFS_TRUE;
 }
 
-int fs_make_dir(const char* path)
+LIBFS_PUBLIC(int)
+fs_make_dir(const char *path)
 {
 	if (CreateDirectory(path, NULL) == 0)
 	{
@@ -290,9 +310,10 @@ int fs_make_dir(const char* path)
 }
 #else /* !HAVE_WINDOWS_H */
 #if defined(HAVE_STDLIB_H)
-char* fs_temp_dir(char* buf, size_t size)
+LIBFS_PUBLIC(char *)
+fs_temp_dir(char *buf, size_t size)
 {
-	const char* path = getenv("TMPDIR");
+	const char *path = getenv("TMPDIR");
 	if (!path)
 	{
 		return NULL;
@@ -304,21 +325,24 @@ char* fs_temp_dir(char* buf, size_t size)
 #endif
 
 #ifdef HAVE_UNISTD_H
-int fs_delete_dir(const char* path)
+LIBFS_PUBLIC(int)
+fs_delete_dir(const char *path)
 {
 	return (rmdir(path) == 0) || (ENOENT == errno);
 }
 #endif
 
 #ifdef HAVE_STDIO_H
-int fs_delete_file(const char* path)
+LIBFS_PUBLIC(int)
+fs_delete_file(const char *path)
 {
 	return (remove(path) == 0) || (ENOENT == errno);
 }
 #endif
 
 #ifdef HAVE_SYS_STAT_H
-int fs_make_dir(const char* path)
+LIBFS_PUBLIC(int)
+fs_make_dir(const char *path)
 {
 	return (mkdir(path, LIBFS_MKDIR_PERMISSIONS) == 0) || (EEXIST == errno);
 }
@@ -328,15 +352,16 @@ int fs_make_dir(const char* path)
 #if defined(HAVE_WINDOWS_H)
 typedef struct fs_win_directory_iterator
 {
-	struct fs_directory_iterator base;
+	fs_directory_iterator base;
 	WIN32_FIND_DATA fdFile;
 	HANDLE hFind;
 	size_t started;
 } fs_win_directory_iterator;
 
-struct fs_directory_iterator* fs_open_dir(const char* path)
+LIBFS_PUBLIC(fs_directory_iterator *)
+fs_open_dir(const char *path)
 {
-	fs_win_directory_iterator* it = (fs_win_directory_iterator*)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
+	fs_win_directory_iterator *it = (fs_win_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
 	memset(it, 0, sizeof(fs_win_directory_iterator));
 
 	TCHAR szDir[MAX_PATH];
@@ -349,12 +374,13 @@ struct fs_directory_iterator* fs_open_dir(const char* path)
 		return NULL;
 	}
 
-	return (fs_directory_iterator*)it;
+	return (fs_directory_iterator *)it;
 }
 
-struct fs_directory_iterator* fs_read_dir(struct fs_directory_iterator* it)
+LIBFS_PUBLIC(fs_directory_iterator *)
+fs_read_dir(fs_directory_iterator *it)
 {
-	fs_win_directory_iterator* _it = (fs_win_directory_iterator*)it;
+	fs_win_directory_iterator *_it = (fs_win_directory_iterator *)it;
 
 	if (!_it->started)
 	{
@@ -369,23 +395,25 @@ struct fs_directory_iterator* fs_read_dir(struct fs_directory_iterator* it)
 	return it;
 }
 
-void fs_close_dir(struct fs_directory_iterator* it)
+LIBFS_PUBLIC(void)
+fs_close_dir(fs_directory_iterator *it)
 {
-	fs_win_directory_iterator* _it = (fs_win_directory_iterator*)it;
+	fs_win_directory_iterator *_it = (fs_win_directory_iterator *)it;
 	FindClose(_it->hFind);
 	_LIBFS_FREE(_it);
 }
 #elif defined(HAVE_DIRENT_H)
 typedef struct fs_posix_directory_iterator
 {
-	struct fs_directory_iterator base;
-	DIR* dir;
-	struct dirent* ent;
+	fs_directory_iterator base;
+	DIR *dir;
+	struct dirent *ent;
 } fs_posix_directory_iterator;
 
-struct fs_directory_iterator* fs_open_dir(const char* path)
+LIBFS_PUBLIC(fs_directory_iterator *)
+fs_open_dir(const char *path)
 {
-	fs_posix_directory_iterator* it = (fs_posix_directory_iterator*)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
+	fs_posix_directory_iterator *it = (fs_posix_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
 	memset(it, 0, sizeof(fs_posix_directory_iterator));
 
 	if (!(it->dir = opendir(path)))
@@ -394,24 +422,26 @@ struct fs_directory_iterator* fs_open_dir(const char* path)
 		return NULL;
 	}
 
-	return (fs_directory_iterator*)it;
+	return (fs_directory_iterator *)it;
 }
 
-struct fs_directory_iterator* fs_read_dir(struct fs_directory_iterator* it)
+LIBFS_PUBLIC(fs_directory_iterator *)
+fs_read_dir(fs_directory_iterator *it)
 {
-	fs_posix_directory_iterator* _it = (fs_posix_directory_iterator*)it;
+	fs_posix_directory_iterator *_it = (fs_posix_directory_iterator *)it;
 	if (!(_it->ent = readdir(_it->dir)))
 	{
 		return NULL;
 	}
 
 	_it->base.path = &_it->ent->d_name[0];
-	return (fs_directory_iterator*)_it;
+	return (fs_directory_iterator *)_it;
 }
 
-void fs_close_dir(struct fs_directory_iterator* it)
+LIBFS_PUBLIC(void)
+fs_close_dir(fs_directory_iterator *it)
 {
-	fs_posix_directory_iterator* _it = (fs_posix_directory_iterator*)it;
+	fs_posix_directory_iterator *_it = (fs_posix_directory_iterator *)it;
 	closedir(_it->dir);
 	_LIBFS_FREE(_it);
 }
