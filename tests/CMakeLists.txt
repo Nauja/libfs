@@ -6,7 +6,6 @@ include(ExternalProject)
 set(CMOCKA_SOURCE_DIR "${CMAKE_SOURCE_DIR}/vendor/cmocka")
 set(CMOCKA_INCLUDE_DIR "${CMOCKA_SOURCE_DIR}/include")
 set(CMOCKA_BINARY_DIR "${CMOCKA_SOURCE_DIR}/build")
-set(WITH_STATIC_LIB ${LIBFS_STATIC})
 
 ExternalProject_Add(cmocka
   PREFIX cmocka
@@ -34,8 +33,8 @@ add_dependencies(cmocka_vendor cmocka)
 # libfs tests
 set(_TEST "test_fs")
 
-message("cmocka_BINARY_DIR=${cmocka_BINARY_DIR}")
-message("CMOCKA_STATIC_LIBRARY=${CMOCKA_STATIC_LIBRARY}")
+message("CMOCKA_BINARY_DIR=${CMOCKA_BINARY_DIR}")
+message("CMOCKA_LIBRARY=${CMOCKA_LIBRARY}")
 
 include_directories(${CMOCKA_INCLUDE_DIR}
                     ${CMAKE_SOURCE_DIR}
@@ -50,12 +49,10 @@ add_cmocka_test(libfs-${_TEST}
 target_include_directories(libfs-${_TEST}
     PRIVATE 
         ${CMAKE_BINARY_DIR}
-        ${cmocka_BINARY_DIR})
+        ${CMOCKA_BINARY_DIR})
 
-# Required for static linking CMocka
-if (WIN32)
-target_compile_options(libfs-${_TEST} PRIVATE "/MD$<$<CONFIG:Release>:>" "/MDd$<$<CONFIG:Debug>:>")
-endif()
+# Link cmocka
+add_dependencies(libfs-${_TEST} cmocka)
 
 # Copy test files
 file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR} FILE_PERMISSIONS OWNER_READ OWNER_WRITE)

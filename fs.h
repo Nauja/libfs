@@ -15,7 +15,7 @@ extern "C"
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #ifndef HAVE_DIRENT_H
-/* #undef HAVE_DIRENT_H */
+#define HAVE_DIRENT_H 1
 #endif
 
 /* Define to 1 if you have the <stddef.h> header file. */
@@ -40,7 +40,7 @@ extern "C"
 
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
 #ifndef HAVE_SYS_SENDFILE_H
-/* #undef HAVE_SYS_SENDFILE_H */
+#define HAVE_SYS_SENDFILE_H 1
 #endif
 
 /* Define to 1 if you have the <string.h> header file. */
@@ -50,12 +50,12 @@ extern "C"
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #ifndef HAVE_UNISTD_H
-/* #undef HAVE_UNISTD_H */
+#define HAVE_UNISTD_H 1
 #endif
 
 /* Define to 1 if you have the <windows.h> header file. */
 #ifndef HAVE_WINDOWS_H
-#define HAVE_WINDOWS_H 1
+/* #undef HAVE_WINDOWS_H */
 #endif
 
 /* Define to 1 if you have the `free' function. */
