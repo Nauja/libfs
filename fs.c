@@ -33,6 +33,9 @@
 #define LIBFS_MKDIR_PERMISSIONS 0700
 
 typedef struct fs_hooks fs_hooks;
+typedef struct fs_file_iterator
+{
+} fs_file_iterator;
 typedef struct fs_directory_iterator fs_directory_iterator;
 
 #if defined(_MSC_VER)
@@ -254,6 +257,46 @@ fs_write_file(const char *path, const void *buf, size_t size)
 	fclose(file);
 	return LIBFS_TRUE;
 }
+
+typedef struct fs_posix_file_iterator
+{
+	fs_file_iterator base;
+	FILE *file;
+} fs_posix_file_iterator;
+
+LIBFS_PUBLIC(fs_file_iterator *)
+fs_iter_file(const char *path)
+{
+	FILE *f = fopen(path, "r");
+	if (!f)
+	{
+		return NULL;
+	}
+
+	fs_posix_file_iterator *it = (fs_posix_file_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_file_iterator));
+	memset(it, 0, sizeof(fs_posix_file_iterator));
+	it->file = f;
+	return (fs_file_iterator *)it;
+}
+
+LIBFS_PUBLIC(fs_file_iterator *)
+fs_next_char(fs_file_iterator *it, char *c)
+{
+	if (!fread(c, 1, 1, ((fs_posix_file_iterator *)it)->file))
+	{
+		return NULL;
+	}
+
+	return it;
+}
+
+LIBFS_PUBLIC(void)
+fs_close_file(fs_file_iterator *it)
+{
+	fs_posix_file_iterator *_it = (fs_posix_file_iterator *)it;
+	fclose(_it->file);
+	_LIBFS_FREE(_it);
+}
 #endif
 
 #ifdef HAVE_STRING_H
@@ -361,19 +404,20 @@ typedef struct fs_win_directory_iterator
 LIBFS_PUBLIC(fs_directory_iterator *)
 fs_open_dir(const char *path)
 {
-	fs_win_directory_iterator *it = (fs_win_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
-	memset(it, 0, sizeof(fs_win_directory_iterator));
-
 	TCHAR szDir[MAX_PATH];
 	StringCchCopy(szDir, MAX_PATH, path);
 	StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
-
-	if ((it->hFind = FindFirstFile(szDir, &it->fdFile)) == INVALID_HANDLE_VALUE)
+	WIN32_FIND_DATA fdFile;
+	HANDLE hFind = FindFirstFile(szDir, &fdFile);
+	if (hFind == INVALID_HANDLE_VALUE)
 	{
-		_LIBFS_FREE(it);
 		return NULL;
 	}
 
+	fs_win_directory_iterator *it = (fs_win_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
+	memset(it, 0, sizeof(fs_win_directory_iterator));
+	it->fdFile = fdFile;
+	it->hFind = hFind;
 	return (fs_directory_iterator *)it;
 }
 
@@ -413,15 +457,15 @@ typedef struct fs_posix_directory_iterator
 LIBFS_PUBLIC(fs_directory_iterator *)
 fs_open_dir(const char *path)
 {
-	fs_posix_directory_iterator *it = (fs_posix_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
-	memset(it, 0, sizeof(fs_posix_directory_iterator));
-
-	if (!(it->dir = opendir(path)))
+	DIR *d = opendir(path);
+	if (!d)
 	{
-		_LIBFS_FREE(it);
 		return NULL;
 	}
 
+	fs_posix_directory_iterator *it = (fs_posix_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
+	memset(it, 0, sizeof(fs_posix_directory_iterator));
+	it->dir = d;
 	return (fs_directory_iterator *)it;
 }
 
@@ -435,7 +479,7 @@ fs_read_dir(fs_directory_iterator *it)
 	}
 
 	_it->base.path = &_it->ent->d_name[0];
-	return (fs_directory_iterator *)_it;
+	return it;
 }
 
 LIBFS_PUBLIC(void)

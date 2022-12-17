@@ -7,11 +7,11 @@ extern "C"
 #endif
 
 /** Major version of libfs. */
-#define LIBFS_VERSION_MAJOR 0
+#define LIBFS_VERSION_MAJOR @LIBFS_VERSION_MAJOR @
 /** Minor version of libfs. */
-#define LIBFS_VERSION_MINOR 1
+#define LIBFS_VERSION_MINOR @LIBFS_VERSION_MINOR @
 /** Patch version of libfs. */
-#define LIBFS_VERSION_PATCH 3
+#define LIBFS_VERSION_PATCH @LIBFS_VERSION_PATCH @
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #ifndef HAVE_DIRENT_H
@@ -118,7 +118,7 @@ extern "C"
  * {
  *     // do something
  * }
- * 
+ *
  * #define LIBFS_MALLOC my_malloc
  * @endcode
  */
@@ -131,17 +131,17 @@ extern "C"
 #ifndef LIBFS_FREE
 #ifdef HAVE_FREE
 /**
-* Defines the free function used by libfs at compile time.
-*
-* @code 
-* void my_free(void* ptr)
-* {
-*     // do something
-* }
-* 
-* #define LIBFS_FREE my_free
-* @endcode
-*/
+ * Defines the free function used by libfs at compile time.
+ *
+ * @code
+ * void my_free(void* ptr)
+ * {
+ *     // do something
+ * }
+ *
+ * #define LIBFS_FREE my_free
+ * @endcode
+ */
 #define LIBFS_FREE free
 #else
 #define LIBFS_FREE(ptr)
@@ -162,406 +162,494 @@ extern "C"
 #endif
 
 #if defined(LIBFS_HIDE_SYMBOLS)
-#define LIBFS_PUBLIC(type)   type LIBFS_STDCALL
+#define LIBFS_PUBLIC(type) type LIBFS_STDCALL
 #elif defined(LIBFS_EXPORT_SYMBOLS)
-#define LIBFS_PUBLIC(type)   __declspec(dllexport) type LIBFS_STDCALL
+#define LIBFS_PUBLIC(type) __declspec(dllexport) type LIBFS_STDCALL
 #elif defined(LIBFS_IMPORT_SYMBOLS)
-#define LIBFS_PUBLIC(type)   __declspec(dllimport) type LIBFS_STDCALL
+#define LIBFS_PUBLIC(type) __declspec(dllimport) type LIBFS_STDCALL
 #endif
 #else /* !__WINDOWS__ */
 #define LIBFS_CDECL
 #define LIBFS_STDCALL
 
-#if (defined(__GNUC__) || defined(__SUNPRO_CC) || defined (__SUNPRO_C)) && defined(CJSON_API_VISIBILITY)
-#define LIBFS_PUBLIC(type)   __attribute__((visibility("default"))) type
+#if (defined(__GNUC__) || defined(__SUNPRO_CC) || defined(__SUNPRO_C)) && defined(CJSON_API_VISIBILITY)
+#define LIBFS_PUBLIC(type) __attribute__((visibility("default"))) type
 #else
 #define LIBFS_PUBLIC(type) type
 #endif
 #endif
 
-/** Struct for custom hooks configuration. */
-struct fs_hooks
-{
-    /** Custom malloc function. */
-    void* (LIBFS_CDECL* malloc_fn)(size_t size);
+    /** Struct for custom hooks configuration. */
+    struct fs_hooks
+    {
+        /** Custom malloc function. */
+        void *(LIBFS_CDECL *malloc_fn)(size_t size);
 
-    /**  Custom free function. */
-    void (LIBFS_CDECL* free_fn)(void* ptr);
-};
+        /**  Custom free function. */
+        void(LIBFS_CDECL *free_fn)(void *ptr);
+    };
 
-/**
- * Register custom hooks.
- * 
- * @code{.c}
- * struct fs_hooks hooks = { malloc, free };
- * fs_init_hooks(&hooks);
- * @endcode
- * 
- * @param[in] hooks Hooks configuration
- */
-LIBFS_PUBLIC(void) fs_init_hooks(struct fs_hooks* hooks);
+    /**
+     * Register custom hooks.
+     *
+     * @code{.c}
+     * struct fs_hooks hooks = { malloc, free };
+     * fs_init_hooks(&hooks);
+     * @endcode
+     *
+     * @param[in] hooks Hooks configuration
+     */
+    LIBFS_PUBLIC(void)
+    fs_init_hooks(struct fs_hooks *hooks);
 
-/**
- * Composes an absolute path.
- * 
- * @code{.c}
- * char buf[MAX_PATH];
- * if (!fs_absolute("./relative", buf, MAX_PATH))
- * {
- *     print("fs_absolute failed");
- * }
- * else
- * {
- *     printf("%s", buf);
- * }
- * @endcode
- * 
- * @param[in] path Some null-terminated path
- * @param[out] buf Buffer for storing the result path
- * @param[in] size Buffer size
- * @return A pointer to buf if there is no error, NULL otherwise.
- */
-LIBFS_PUBLIC(char*) fs_absolute(const char* path, char* buf, size_t size);
+    /**
+     * Composes an absolute path.
+     *
+     * @code{.c}
+     * char buf[MAX_PATH];
+     * if (!fs_absolute("./relative", buf, MAX_PATH))
+     * {
+     *     print("fs_absolute failed");
+     * }
+     * else
+     * {
+     *     printf("%s", buf);
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @param[out] buf Buffer for storing the result path
+     * @param[in] size Buffer size
+     * @return A pointer to buf if there is no error, NULL otherwise.
+     */
+    LIBFS_PUBLIC(char *)
+    fs_absolute(const char *path, char *buf, size_t size);
 
-/**
- * Copies files or directories.
- * 
- * @code{.c}
- * fs_copy("foo.txt", "bar.txt");
- * @endcode 
- * 
- * @param[in] from Some null-terminated path to the source file, directory, or symlink
- * @param[in] to Some null-terminated path to the destination file, directory, or symlink
- */
-LIBFS_PUBLIC(void) fs_copy(const char* from, const char* to);
+    /**
+     * Copies files or directories.
+     *
+     * @code{.c}
+     * fs_copy("foo.txt", "bar.txt");
+     * @endcode
+     *
+     * @param[in] from Some null-terminated path to the source file, directory, or symlink
+     * @param[in] to Some null-terminated path to the destination file, directory, or symlink
+     */
+    LIBFS_PUBLIC(void)
+    fs_copy(const char *from, const char *to);
 
-/**
- * Copies file contents.
- * 
- * @code{.c}
- * fs_copy_file("foo.txt", "bar.txt");
- * @endcode 
- * 
- * @param[in] from Some null-terminated path to the source file
- * @param[in] to Some null-terminated path to the destination file
- */
-LIBFS_PUBLIC(void) fs_copy_file(const char* from, const char* to);
+    /**
+     * Copies file contents.
+     *
+     * @code{.c}
+     * fs_copy_file("foo.txt", "bar.txt");
+     * @endcode
+     *
+     * @param[in] from Some null-terminated path to the source file
+     * @param[in] to Some null-terminated path to the destination file
+     */
+    LIBFS_PUBLIC(void)
+    fs_copy_file(const char *from, const char *to);
 
-/**
- * Get the current working directory.
- * 
- * @code{.c}
- * char buf[MAX_PATH];
- * if (!fs_current_dir(buf, MAX_PATH))
- * {
- *     print("fs_current_dir failed");
- * }
- * else
- * {
- *     printf("%s", buf);
- * }
- * @endcode 
- * 
- * @param[out] buf Buffer for storing the result path
- * @param[in] size Buffer size
- * @return A pointer to buf if there is no error, NULL otherwise.
- */
-LIBFS_PUBLIC(char*) fs_current_dir(char* buf, size_t size);
+    /**
+     * Get the current working directory.
+     *
+     * @code{.c}
+     * char buf[MAX_PATH];
+     * if (!fs_current_dir(buf, MAX_PATH))
+     * {
+     *     print("fs_current_dir failed");
+     * }
+     * else
+     * {
+     *     printf("%s", buf);
+     * }
+     * @endcode
+     *
+     * @param[out] buf Buffer for storing the result path
+     * @param[in] size Buffer size
+     * @return A pointer to buf if there is no error, NULL otherwise.
+     */
+    LIBFS_PUBLIC(char *)
+    fs_current_dir(char *buf, size_t size);
 
-/**
- * Concatenates two paths together with the platform specific separator.
- * 
- * @code{.c}
- * char cwd[MAX_PATH];
- * if (!fs_current_dir(cwd, MAX_PATH))
- * {
- *     print("fs_current_dir failed");
- *     return;
- * }
- * 
- * char buf[MAX_PATH];
- * fs_join_path(buf, MAX_PATH, cwd, "foo.txt"); 
- * printf("%s", buf);
- * @endcode 
- * 
- * @param[out] buf Buffer for storing the result path
- * @param[in] size Buffer size
- * @param[in] left Left part null-terminated path
- * @param[in] right Right part null-terminated path
- * @return The number of bytes written to buf.
- */
-LIBFS_PUBLIC(size_t) fs_join_path(char* buf, size_t size, const char* left, const char* right);
+    /**
+     * Concatenates two paths together with the platform specific separator.
+     *
+     * @code{.c}
+     * char cwd[MAX_PATH];
+     * if (!fs_current_dir(cwd, MAX_PATH))
+     * {
+     *     print("fs_current_dir failed");
+     *     return;
+     * }
+     *
+     * char buf[MAX_PATH];
+     * fs_join_path(buf, MAX_PATH, cwd, "foo.txt");
+     * printf("%s", buf);
+     * @endcode
+     *
+     * @param[out] buf Buffer for storing the result path
+     * @param[in] size Buffer size
+     * @param[in] left Left part null-terminated path
+     * @param[in] right Right part null-terminated path
+     * @return The number of bytes written to buf.
+     */
+    LIBFS_PUBLIC(size_t)
+    fs_join_path(char *buf, size_t size, const char *left, const char *right);
 
-/**
- * Checks if a path corresponds to an existing file or directory.
- * 
- * @code{.c}
- * if (!fs_exist("./foo.txt"))
- * {
- *     print("foo.txt not found");
- * }
- * else
- * {
- *     printf("foo.txt found");
- * }
- * @endcode
- * 
- * @param[in] path Some null-terminated path
- * @return If the file or directory exists.
- */
-LIBFS_PUBLIC(int) fs_exist(const char* path);
+    /**
+     * Checks if a path corresponds to an existing file or directory.
+     *
+     * @code{.c}
+     * if (!fs_exist("./foo.txt"))
+     * {
+     *     print("foo.txt not found");
+     * }
+     * else
+     * {
+     *     printf("foo.txt found");
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return If the file or directory exists.
+     */
+    LIBFS_PUBLIC(int)
+    fs_exist(const char *path);
 
-/**
- * Gets the size of an existing file.
- *
- * @code{.c}
- * long size = fs_file_size("foo.txt")
- * printf("file size: %d", size);
- * @endcode
- * 
- * @param[in] path Some null-terminated path
- * @return The size of the file, in bytes
- */
-LIBFS_PUBLIC(size_t) fs_file_size(const char* path);
+    /**
+     * Gets the size of an existing file.
+     *
+     * @code{.c}
+     * long size = fs_file_size("foo.txt")
+     * printf("file size: %d", size);
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return The size of the file, in bytes
+     */
+    LIBFS_PUBLIC(size_t)
+    fs_file_size(const char *path);
 
-/**
- * Checks if a path corresponds to a directory.
- * 
- * @code{.c}
- * if (!fs_is_directory("./somedirectory"))
- * {
- *     print("path is not a directory");
- * }
- * else
- * {
- *     print("path is a directory");
- * }
- * @endcode 
- * 
- * @param[in] path Some null-terminated path
- * @return If path points to an existing directory.
- */
-LIBFS_PUBLIC(int) fs_is_directory(const char* path);
+    /**
+     * Checks if a path corresponds to a directory.
+     *
+     * @code{.c}
+     * if (!fs_is_directory("./somedirectory"))
+     * {
+     *     print("path is not a directory");
+     * }
+     * else
+     * {
+     *     print("path is a directory");
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return If path points to an existing directory.
+     */
+    LIBFS_PUBLIC(int)
+    fs_is_directory(const char *path);
 
-/**
- * Checks if a path corresponds to a file.
- * 
- * @code{.c}
- * if (!fs_is_file("./foo.txt"))
- * {
- *     print("path is not a file");
- * }
- * else
- * {
- *     print("path is a file");
- * }
- * @endcode 
- * 
- * @param[in] path Some null-terminated path
- * @return If path points to an existing file.
- */
-LIBFS_PUBLIC(int) fs_is_file(const char* path);
+    /**
+     * Checks if a path corresponds to a file.
+     *
+     * @code{.c}
+     * if (!fs_is_file("./foo.txt"))
+     * {
+     *     print("path is not a file");
+     * }
+     * else
+     * {
+     *     print("path is a file");
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return If path points to an existing file.
+     */
+    LIBFS_PUBLIC(int)
+    fs_is_file(const char *path);
 
-/**
- * Checks if a path corresponds to a symbolic link.
- * 
- * @code{.c}
- * if (!fs_is_symlink("./somesymlink"))
- * {
- *     print("path is not a symbolic link");
- * }
- * else
- * {
- *     print("path is a symbolic link");
- * }
- * @endcode 
- * 
- * @param[in] path Some null-terminated path
- * @return If path points to an existing symbolic link.
- */
-LIBFS_PUBLIC(int) fs_is_symlink(const char* path);
+    /**
+     * Checks if a path corresponds to a symbolic link.
+     *
+     * @code{.c}
+     * if (!fs_is_symlink("./somesymlink"))
+     * {
+     *     print("path is not a symbolic link");
+     * }
+     * else
+     * {
+     *     print("path is a symbolic link");
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return If path points to an existing symbolic link.
+     */
+    LIBFS_PUBLIC(int)
+    fs_is_symlink(const char *path);
 
-/**
- * Reads a whole file content.
- * 
- * @code{.c}
- * int size;
- * void* buf;
- * if (!(buf = fs_read_file("foo.txt", &size)))
- * {
- *     printf("fs_read_file failed");
- * }
- * else
- * {
- *     printf("file size: %d", size);
- * }
- * @endcode 
- * 
- * @param[in] path Some null-terminated path to existing file
- * @param[out] size Number of bytes read
- * @return A pointer to read bytes if there is no error, NULL otherwise.
- */
-LIBFS_PUBLIC(void*) fs_read_file(const char* path, size_t* size);
+    /**
+     * Reads a whole file content.
+     *
+     * @code{.c}
+     * int size;
+     * void* buf;
+     * if (!(buf = fs_read_file("foo.txt", &size)))
+     * {
+     *     printf("fs_read_file failed");
+     * }
+     * else
+     * {
+     *     printf("file size: %d", size);
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path to existing file
+     * @param[out] size Number of bytes read
+     * @return A pointer to read bytes if there is no error, NULL otherwise.
+     */
+    LIBFS_PUBLIC(void *)
+    fs_read_file(const char *path, size_t *size);
 
-/**
- * Writes content to file.
- * 
- * @code{.c}
- * const char* buf = "hello";
- * if (!fs_write_file("foo.txt", buf, 5))
- * {
- *     printf("fs_write_file failed");
- * }
- * @endcode 
- * 
- * @param[in] path Some null-terminated path
- * @param[in] buf Some memory buffer
- * @param[in] size Buffer size
- * @return If the file was written.
- */
-LIBFS_PUBLIC(int) fs_write_file(const char* path, const void* buf, size_t size);
+    /**
+     * Writes content to file.
+     *
+     * @code{.c}
+     * const char* buf = "hello";
+     * if (!fs_write_file("foo.txt", buf, 5))
+     * {
+     *     printf("fs_write_file failed");
+     * }
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @param[in] buf Some memory buffer
+     * @param[in] size Buffer size
+     * @return If the file was written.
+     */
+    LIBFS_PUBLIC(int)
+    fs_write_file(const char *path, const void *buf, size_t size);
 
-/**
- * Gets the absolute path to the platform specific temporary directory.
- *
- * @code{.c}
- * char buf[MAX_PATH];
- * if (!fs_temp_dir(buf, MAX_PATH))
- * {
- *     printf("fs_temp_dir failed");
- * }
- * else
- * {
- *     printf("%s", buf);
- * }
- * @endcode
- *
- * @param[in] buf Buffer for storing the result path
- * @param[in] size Buffer size
- * @return A pointer to buf if there is no error, NULL otherwise.
- */
-LIBFS_PUBLIC(char*) fs_temp_dir(char* buf, size_t size);
+    /**
+     * Struct used to iterate over a file.
+     *
+     * @code{.c}
+     * struct fs_file_iterator* it = fs_iter_file("foo.txt");
+     * char c;
+     *
+     * while(fs_next_char(it, &c))
+     * {
+     *     printf("%c", c);
+     * }
+     *
+     * fs_close_file(it);
+     * @endcode
+     */
+    struct fs_file_iterator;
 
-/**
- * Deletes an empty directory if it exists.
- *
- * @code
- * if (!fs_delete_dir("foo"))
- * {
- *     printf("fs_delete_dir failed");
- * }
- * @endcode
- * @param[in] path Some null-terminated path
- * @return If the directory was deleted.
- */
-LIBFS_PUBLIC(int) fs_delete_dir(const char* path);
+    /**
+     * Opens a file to iterate over its content.
+     *
+     * @code{.c}
+     * struct fs_file_iterator* it = fs_iter_file("foo.txt");
+     *
+     * // iterate file
+     *
+     * fs_close_file(it);
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return A pointer for iterating over the file if there is no error, NULL otherwise.
+     */
+    LIBFS_PUBLIC(struct fs_file_iterator *)
+    fs_iter_file(const char *path);
 
-/**
- * Deletes a file if it exists.
- *
- * @code
- * if (!fs_delete_file("foo.txt"))
- * {
- *     printf("fs_delete_file failed");
- * }
- * @endcode
- * @param[in] path Some null-terminated path
- * @return If the file was deleted.
- */
-LIBFS_PUBLIC(int) fs_delete_file(const char* path);
+    /**
+     * Iterates over the next char of a file.
+     *
+     * @code{.c}
+     * char c;
+     * while(fs_next_char(it, &c))
+     * {
+     *     printf("%c", c);
+     * }
+     * @endcode
+     *
+     * @param[in] it Some opened file iterator
+     * @param[out] c Character read
+     * @return The same it pointer or NULL if an error occurred or there is no more entry to iterate over.
+     */
+    LIBFS_PUBLIC(struct fs_file_iterator *)
+    fs_next_char(struct fs_file_iterator *it, char *c);
 
-/**
- * Creates a directory if it doesn't exist.
- *
- * The parent directory must exist as it will not
- * be created recursively.
- *
- * @code
- * if (!fs_make_dir("foo"))
- * {
- *     printf("fs_make_dir failed");
- * }
- * @endcode
- * @param[in] path Some null-terminated path
- * @return If the directory was created.
- */
-LIBFS_PUBLIC(int) fs_make_dir(const char* path);
+    /**
+     * Closes and frees an opened file iterator.
+     *
+     * @code{.c}
+     * struct fs_file_iterator* it = fs_iter_file("foo.txt");
+     *
+     * // iterate file
+     *
+     * fs_close_file(it);
+     * @endcode
+     *
+     * @param[in] it Some opened file iterator
+     */
+    LIBFS_PUBLIC(void)
+    fs_close_file(struct fs_file_iterator *it);
 
-/**
- * Struct used to iterate over a directory.
- *
- * @code{.c}
- * struct fs_directory_iterator* it = fs_open_dir("./somedir");
- * 
- * while(fs_read_dir(it))
- * {
- *     printf("%s", it->path);
- * }
- * 
- * fs_close_dir(it);
- * @endcode
- */
-struct fs_directory_iterator
-{
-    /** Path to file. */
-    const char* path;
-};
+    /**
+     * Gets the absolute path to the platform specific temporary directory.
+     *
+     * @code{.c}
+     * char buf[MAX_PATH];
+     * if (!fs_temp_dir(buf, MAX_PATH))
+     * {
+     *     printf("fs_temp_dir failed");
+     * }
+     * else
+     * {
+     *     printf("%s", buf);
+     * }
+     * @endcode
+     *
+     * @param[in] buf Buffer for storing the result path
+     * @param[in] size Buffer size
+     * @return A pointer to buf if there is no error, NULL otherwise.
+     */
+    LIBFS_PUBLIC(char *)
+    fs_temp_dir(char *buf, size_t size);
 
-/**
- * Gets an iterator over entries of a directory.
- *
- * @code{.c}
- * struct fs_directory_iterator* it = fs_open_dir("./somedir");
- * 
- * while(fs_read_dir(it))
- * {
- *     printf("%s", it->path);
- * }
- * 
- * fs_close_dir(it);
- * @endcode
- *
- * @param[in] path Some null-terminated path
- * @return A pointer for iterating over the directory if there is no error, NULL otherwise.
- */
-LIBFS_PUBLIC(struct fs_directory_iterator*) fs_open_dir(const char* path);
+    /**
+     * Deletes an empty directory if it exists.
+     *
+     * @code
+     * if (!fs_delete_dir("foo"))
+     * {
+     *     printf("fs_delete_dir failed");
+     * }
+     * @endcode
+     * @param[in] path Some null-terminated path
+     * @return If the directory was deleted.
+     */
+    LIBFS_PUBLIC(int)
+    fs_delete_dir(const char *path);
 
-/**
- * Iterates over the next entry of a directory.
- *
- * @code{.c}
- * struct fs_directory_iterator* it = fs_open_dir("./somedir");
- *
- * while(fs_read_dir(it))
- * {
- *     printf("%s", it->path);
- * }
- *
- * fs_close_dir(it);
- * @endcode
- *
- * @param[in] it Some opened directory iterator
- * @return The same it pointer or NULL if an error occurred or there is no more entry to iterate over.
- */
-LIBFS_PUBLIC(struct fs_directory_iterator*) fs_read_dir(struct fs_directory_iterator* it);
+    /**
+     * Deletes a file if it exists.
+     *
+     * @code
+     * if (!fs_delete_file("foo.txt"))
+     * {
+     *     printf("fs_delete_file failed");
+     * }
+     * @endcode
+     * @param[in] path Some null-terminated path
+     * @return If the file was deleted.
+     */
+    LIBFS_PUBLIC(int)
+    fs_delete_file(const char *path);
 
-/**
- * Closes and frees an opened directory iterator.
- *
- * @code{.c}
- * struct fs_directory_iterator* it = fs_open_dir("./somedir");
- *
- * while(fs_read_dir(it))
- * {
- *     printf("%s", it->path);
- * }
- *
- * fs_close_dir(it);
- * @endcode
- *
- * @param[in] it Some opened directory iterator
- */
-LIBFS_PUBLIC(void) fs_close_dir(struct fs_directory_iterator* it);
+    /**
+     * Creates a directory if it doesn't exist.
+     *
+     * The parent directory must exist as it will not
+     * be created recursively.
+     *
+     * @code
+     * if (!fs_make_dir("foo"))
+     * {
+     *     printf("fs_make_dir failed");
+     * }
+     * @endcode
+     * @param[in] path Some null-terminated path
+     * @return If the directory was created.
+     */
+    LIBFS_PUBLIC(int)
+    fs_make_dir(const char *path);
+
+    /**
+     * Struct used to iterate over a directory.
+     *
+     * @code{.c}
+     * struct fs_directory_iterator* it = fs_open_dir("./somedir");
+     *
+     * while(fs_read_dir(it))
+     * {
+     *     printf("%s", it->path);
+     * }
+     *
+     * fs_close_dir(it);
+     * @endcode
+     */
+    struct fs_directory_iterator
+    {
+        /** Path to file. */
+        const char *path;
+    };
+
+    /**
+     * Gets an iterator over entries of a directory.
+     *
+     * @code{.c}
+     * struct fs_directory_iterator* it = fs_open_dir("./somedir");
+     *
+     * while(fs_read_dir(it))
+     * {
+     *     printf("%s", it->path);
+     * }
+     *
+     * fs_close_dir(it);
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return A pointer for iterating over the directory if there is no error, NULL otherwise.
+     */
+    LIBFS_PUBLIC(struct fs_directory_iterator *)
+    fs_open_dir(const char *path);
+
+    /**
+     * Iterates over the next entry of a directory.
+     *
+     * @code{.c}
+     * struct fs_directory_iterator* it = fs_open_dir("./somedir");
+     *
+     * while(fs_read_dir(it))
+     * {
+     *     printf("%s", it->path);
+     * }
+     *
+     * fs_close_dir(it);
+     * @endcode
+     *
+     * @param[in] it Some opened directory iterator
+     * @return The same it pointer or NULL if an error occurred or there is no more entry to iterate over.
+     */
+    LIBFS_PUBLIC(struct fs_directory_iterator *)
+    fs_read_dir(struct fs_directory_iterator *it);
+
+    /**
+     * Closes and frees an opened directory iterator.
+     *
+     * @code{.c}
+     * struct fs_directory_iterator* it = fs_open_dir("./somedir");
+     *
+     * while(fs_read_dir(it))
+     * {
+     *     printf("%s", it->path);
+     * }
+     *
+     * fs_close_dir(it);
+     * @endcode
+     *
+     * @param[in] it Some opened directory iterator
+     */
+    LIBFS_PUBLIC(void)
+    fs_close_dir(struct fs_directory_iterator *it);
 
 #ifdef __cplusplus
 }
