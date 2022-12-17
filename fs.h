@@ -7,11 +7,11 @@ extern "C"
 #endif
 
 /** Major version of libfs. */
-#define LIBFS_VERSION_MAJOR @LIBFS_VERSION_MAJOR @
+#define LIBFS_VERSION_MAJOR 0
 /** Minor version of libfs. */
-#define LIBFS_VERSION_MINOR @LIBFS_VERSION_MINOR @
+#define LIBFS_VERSION_MINOR 1
 /** Patch version of libfs. */
-#define LIBFS_VERSION_PATCH @LIBFS_VERSION_PATCH @
+#define LIBFS_VERSION_PATCH 3
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #ifndef HAVE_DIRENT_H
