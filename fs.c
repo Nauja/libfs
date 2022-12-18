@@ -33,9 +33,6 @@
 #define LIBFS_MKDIR_PERMISSIONS 0700
 
 typedef struct fs_hooks fs_hooks;
-typedef struct fs_file_iterator
-{
-} fs_file_iterator;
 typedef struct fs_directory_iterator fs_directory_iterator;
 
 #if defined(_MSC_VER)
@@ -258,11 +255,10 @@ fs_write_file(const char *path, const void *buf, size_t size)
 	return LIBFS_TRUE;
 }
 
-typedef struct fs_posix_file_iterator
+typedef struct fs_file_iterator
 {
-	fs_file_iterator base;
 	FILE *file;
-} fs_posix_file_iterator;
+} fs_file_iterator;
 
 LIBFS_PUBLIC(fs_file_iterator *)
 fs_iter_file(const char *path)
@@ -273,16 +269,16 @@ fs_iter_file(const char *path)
 		return NULL;
 	}
 
-	fs_posix_file_iterator *it = (fs_posix_file_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_file_iterator));
-	memset(it, 0, sizeof(fs_posix_file_iterator));
+	fs_file_iterator *it = (fs_file_iterator *)_LIBFS_MALLOC(sizeof(fs_file_iterator));
+	memset(it, 0, sizeof(fs_file_iterator));
 	it->file = f;
-	return (fs_file_iterator *)it;
+	return it;
 }
 
 LIBFS_PUBLIC(fs_file_iterator *)
 fs_next_char(fs_file_iterator *it, char *c)
 {
-	if (!fread(c, 1, 1, ((fs_posix_file_iterator *)it)->file))
+	if (!fread(c, 1, 1, it->file))
 	{
 		return NULL;
 	}
@@ -293,9 +289,8 @@ fs_next_char(fs_file_iterator *it, char *c)
 LIBFS_PUBLIC(void)
 fs_close_file(fs_file_iterator *it)
 {
-	fs_posix_file_iterator *_it = (fs_posix_file_iterator *)it;
-	fclose(_it->file);
-	_LIBFS_FREE(_it);
+	fclose(it->file);
+	_LIBFS_FREE(it);
 }
 #endif
 
