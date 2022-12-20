@@ -4,8 +4,6 @@
 fs_current_dir
 ---------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

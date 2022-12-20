@@ -4,8 +4,6 @@
 LIBFS_MAX_PATH
 --------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

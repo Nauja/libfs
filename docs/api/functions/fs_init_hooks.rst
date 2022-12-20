@@ -4,8 +4,6 @@
 fs_init_hooks
 -------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

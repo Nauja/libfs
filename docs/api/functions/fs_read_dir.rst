@@ -4,8 +4,6 @@
 fs_read_dir
 -----------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

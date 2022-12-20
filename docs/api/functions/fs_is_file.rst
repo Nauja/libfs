@@ -4,8 +4,6 @@
 fs_is_file
 ----------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

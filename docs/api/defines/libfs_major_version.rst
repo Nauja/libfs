@@ -4,8 +4,6 @@
 LIBFS_VERSION_MAJOR
 -------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 LIBFS_MALLOC
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

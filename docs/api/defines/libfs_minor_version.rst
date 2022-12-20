@@ -4,8 +4,6 @@
 LIBFS_VERSION_MINOR
 -------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 LIBFS_VERSION_PATCH
 -------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

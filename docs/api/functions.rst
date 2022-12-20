@@ -8,8 +8,6 @@ simple examples on how to use them.
 Functions
 =========
 
-.. module:: libfs
-
 .. toctree::
    :maxdepth: 1
    :glob:

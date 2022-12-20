@@ -4,8 +4,6 @@
 fs_assert_open_dir
 ------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

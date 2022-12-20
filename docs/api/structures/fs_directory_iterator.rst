@@ -4,8 +4,6 @@
 fs_directory_iterator
 ---------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

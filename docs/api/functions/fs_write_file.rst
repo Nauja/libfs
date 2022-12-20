@@ -4,8 +4,6 @@
 fs_write_file
 -------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

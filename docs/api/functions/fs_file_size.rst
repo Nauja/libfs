@@ -4,8 +4,6 @@
 fs_file_size
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

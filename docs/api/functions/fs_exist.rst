@@ -4,8 +4,6 @@
 fs_exist
 ---------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -5,8 +5,6 @@
 Defines
 =======
 
-.. module:: libfs
-
 .. toctree::
    :maxdepth: 1
    :glob:
