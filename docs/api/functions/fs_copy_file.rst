@@ -4,8 +4,6 @@
 fs_copy_file
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

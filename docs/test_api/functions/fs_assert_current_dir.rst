@@ -4,8 +4,6 @@
 fs_assert_current_dir
 ---------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 fs_is_symlink
 -------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 fs_temp_dir
 -----------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

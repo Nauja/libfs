@@ -5,8 +5,6 @@
 Changelog
 =========
 
-.. module:: libfs
-
 v0.1.3
 ------
 

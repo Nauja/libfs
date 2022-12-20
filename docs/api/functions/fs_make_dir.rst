@@ -4,8 +4,6 @@
 fs_make_dir
 -----------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

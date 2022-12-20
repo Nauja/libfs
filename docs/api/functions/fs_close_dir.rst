@@ -4,8 +4,6 @@
 fs_close_dir
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

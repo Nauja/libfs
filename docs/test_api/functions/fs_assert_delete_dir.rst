@@ -4,8 +4,6 @@
 fs_assert_delete_dir
 --------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 fs_delete_dir
 -------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

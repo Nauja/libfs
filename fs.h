@@ -435,6 +435,7 @@ extern "C"
     fs_write_file(const char *path, const void *buf, size_t size);
 
     /**
+     * @struct fs_file_iterator
      * Struct used to iterate over a file.
      *
      * @code{.c}

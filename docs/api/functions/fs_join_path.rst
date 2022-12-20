@@ -4,8 +4,6 @@
 fs_join_path
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

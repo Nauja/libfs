@@ -4,8 +4,6 @@
 fs_is_directory
 ---------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 fs_assert_write_file
 --------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

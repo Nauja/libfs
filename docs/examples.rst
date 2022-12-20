@@ -5,8 +5,6 @@
 Advanced Usages
 ===============
 
-.. module:: libfs
-
 Those are more advanced usages for experienced users.
 
 Build as a Static Library with CMake

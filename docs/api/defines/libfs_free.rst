@@ -4,8 +4,6 @@
 LIBFS_FREE
 ----------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

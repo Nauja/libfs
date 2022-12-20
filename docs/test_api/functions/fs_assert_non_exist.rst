@@ -4,8 +4,6 @@
 fs_assert_non_exist
 -------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

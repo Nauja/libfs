@@ -4,8 +4,6 @@
 fs_iter_file
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

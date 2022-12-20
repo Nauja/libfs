@@ -4,8 +4,6 @@
 fs_assert_read_dir
 ------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

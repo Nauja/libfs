@@ -4,8 +4,6 @@
 fs_assert_make_dir
 ------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

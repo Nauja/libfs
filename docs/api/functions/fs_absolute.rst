@@ -4,8 +4,6 @@
 fs_absolute
 -----------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

@@ -4,8 +4,6 @@
 fs_next_char
 ------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       

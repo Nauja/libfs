@@ -9,8 +9,6 @@ utility functions to help you write your own tests.
 Functions
 =========
 
-.. module:: libfs
-
 .. toctree::
    :maxdepth: 1
    :glob:

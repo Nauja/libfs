@@ -4,8 +4,6 @@
 fs_assert_iter_file
 -------------------
 
-.. module:: libfs
-
 .. contents::
    :local:
       
