@@ -1,3 +1,4 @@
+docutils==0.16
 breathe
 m2r2
 sphinx-rtd-theme
