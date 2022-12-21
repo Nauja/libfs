@@ -5,12 +5,15 @@
 Changelog
 =========
 
-v0.1.3
-------
+v0.2.0 (Dec 21, 2022)
+---------------------
 
-  * Better organize doc
-  * Fixed a warning with implicit cast from fs_posix_directory_iterator to fs_directory_iterator
-  * Add missing stdarg.h include before cmocka.h
+  * Improve CMakeLists.txt
+  * Improve documentation
+  * Add workflows for Windows/Mac/Linux
+  * Add missing LIBFS_PUBLIC in fs.c
+  * Fix many warnings
+  * Add fs_iter_file fs_next_char fs_close_file fs_assert_iter_file
 
 v0.1.2 (Jan 13, 2022)
 ---------------------
