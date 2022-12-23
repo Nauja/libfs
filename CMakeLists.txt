@@ -1,4 +1,14 @@
 cmake_minimum_required(VERSION 3.3)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+ 
+if (MSVC)
+list(APPEND LIBFS_COMPILE_FLAGS /W4 /WX)
+else()
+list(APPEND LIBFS_COMPILE_FLAGS -Wall -Wextra -pedantic -Werror)
+endif()
  
 # Specify search path for CMake modules to be loaded by include() 
 # and find_package()
@@ -6,7 +16,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 set(LIBFS_VERSION_MAJOR 0)
 set(LIBFS_VERSION_MINOR 2)
-set(LIBFS_VERSION_PATCH 0)
+set(LIBFS_VERSION_PATCH 1)
 set(LIBFS_VERSION "${LIBFS_VERSION_MAJOR}.${LIBFS_VERSION_MINOR}.${LIBFS_VERSION_PATCH}")
 
 #find_package(Git)
@@ -66,9 +76,12 @@ file(GLOB HEADERS fs.h)
 set(SOURCES fs.c)
 
 add_library("${LIBFS_LIB}" SHARED "${HEADERS}" "${SOURCES}")
+set_target_properties(${LIBFS_LIB} PROPERTIES
+        C_STANDARD 90)
+
 target_compile_options("${LIBFS_LIB}"
                         PRIVATE
-                            ${DEFAULT_C_COMPILE_FLAGS}
+                            ${LIBFS_COMPILE_FLAGS}
                             -DHAVE_CONFIG_H)
                                
 target_include_directories(${LIBFS_LIB}
@@ -81,12 +94,14 @@ if (LIBFS_STATIC)
     set(LIBFS_STATIC_LIB "${LIBFS_LIB}-static")
 
     add_library(${LIBFS_STATIC_LIB} STATIC "${HEADERS}" "${SOURCES}")
-    set_target_properties(${LIBFS_STATIC_LIB} PROPERTIES OUTPUT_NAME "${LIBFS_LIB}")
-    set_target_properties(${LIBFS_STATIC_LIB} PROPERTIES PREFIX "")
+    set_target_properties(${LIBFS_STATIC_LIB} PROPERTIES
+            C_STANDARD 90
+            OUTPUT_NAME "${LIBFS_LIB}"
+            PREFIX "")
 
     target_compile_options(${LIBFS_STATIC_LIB}
                            PRIVATE
-                               ${DEFAULT_C_COMPILE_FLAGS}
+                               ${LIBFS_COMPILE_FLAGS}
                                -DHAVE_CONFIG_H
                                -DLIBFS_HIDE_SYMBOLS)
                                

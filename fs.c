@@ -28,9 +28,22 @@
 #include <strsafe.h>
 #endif
 
+#ifndef realpath
+char *realpath(const char *path, char *resolved_path);
+#endif
+
+#ifndef snprintf
+int snprintf(char *s, size_t n, const char *format, ...);
+#endif
+
+#ifndef fileno
+int fileno(FILE *stream);
+#endif
+
 #define LIBFS_FALSE 0
 #define LIBFS_TRUE 1
 #define LIBFS_MKDIR_PERMISSIONS 0700
+#define LIBFS_UNUSED(x) (void)(x)
 
 typedef struct fs_hooks fs_hooks;
 typedef struct fs_directory_iterator fs_directory_iterator;
@@ -69,6 +82,7 @@ fs_init_hooks(fs_hooks *hooks)
 LIBFS_PUBLIC(char *)
 fs_absolute(const char *path, char *buf, size_t size)
 {
+	LIBFS_UNUSED(size);
 	if (!GetFullPathName(path, (DWORD)size, buf, NULL))
 	{
 		return NULL;
@@ -93,6 +107,7 @@ fs_copy_file(const char *from, const char *to)
 LIBFS_PUBLIC(char *)
 fs_absolute(const char *path, char *buf, size_t size)
 {
+	LIBFS_UNUSED(size);
 	if (!realpath(path, buf))
 	{
 		return NULL;
@@ -169,14 +184,14 @@ LIBFS_PUBLIC(int)
 fs_is_directory(const char *path)
 {
 	struct stat s;
-	return (stat(path, &s) == 0) && (s.st_mode & S_IFDIR);
+	return (stat(path, &s) == 0) && S_ISDIR(s.st_mode);
 }
 
 LIBFS_PUBLIC(int)
 fs_is_file(const char *path)
 {
 	struct stat s;
-	return (stat(path, &s) == 0) && (s.st_mode & S_IFREG);
+	return (stat(path, &s) == 0) && S_ISREG(s.st_mode);
 }
 
 LIBFS_PUBLIC(int)
@@ -184,8 +199,10 @@ fs_is_symlink(const char *path)
 {
 #ifndef HAVE_WINDOWS_H
 	struct stat s;
-	return (stat(path, &s) == 0) && (s.st_mode & S_IFLNK);
+	LIBFS_UNUSED(path);
+	return (stat(path, &s) == 0) && S_ISLNK(s.st_mode);
 #else
+	LIBFS_UNUSED(path);
 	return 0;
 #endif
 }
@@ -195,13 +212,13 @@ fs_is_symlink(const char *path)
 LIBFS_PUBLIC(size_t)
 fs_file_size(const char *path)
 {
+	struct stat stat;
 	FILE *file = fopen(path, "rb");
 	if (!file)
 	{
 		return -1L;
 	}
 
-	struct stat stat;
 	if (fstat(fileno(file), &stat) == -1)
 	{
 		return -1;
@@ -214,19 +231,21 @@ fs_file_size(const char *path)
 LIBFS_PUBLIC(void *)
 fs_read_file(const char *path, size_t *size)
 {
+	void *data;
+	int length;
 	FILE *file = fopen(path, "rb");
 	if (!file)
 	{
 		return NULL;
 	}
 
-	// Check file size
+	/* Check file size */
 	fseek(file, 0, SEEK_END);
-	int length = ftell(file);
+	length = ftell(file);
 	fseek(file, 0, SEEK_SET);
 
-	// Read file content
-	void *data = _LIBFS_MALLOC(length + 1);
+	/* Read file content */
+	data = _LIBFS_MALLOC(length + 1);
 	if (!data)
 	{
 		fclose(file);
@@ -263,13 +282,14 @@ typedef struct fs_file_iterator
 LIBFS_PUBLIC(fs_file_iterator *)
 fs_iter_file(const char *path)
 {
+	fs_file_iterator *it;
 	FILE *f = fopen(path, "r");
 	if (!f)
 	{
 		return NULL;
 	}
 
-	fs_file_iterator *it = (fs_file_iterator *)_LIBFS_MALLOC(sizeof(fs_file_iterator));
+	it = (fs_file_iterator *)_LIBFS_MALLOC(sizeof(fs_file_iterator));
 	memset(it, 0, sizeof(fs_file_iterator));
 	it->file = f;
 	return it;
@@ -399,17 +419,19 @@ typedef struct fs_win_directory_iterator
 LIBFS_PUBLIC(fs_directory_iterator *)
 fs_open_dir(const char *path)
 {
+	fs_win_directory_iterator *it;
 	TCHAR szDir[MAX_PATH];
+	WIN32_FIND_DATA fdFile;
+	HANDLE hFind;
 	StringCchCopy(szDir, MAX_PATH, path);
 	StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
-	WIN32_FIND_DATA fdFile;
-	HANDLE hFind = FindFirstFile(szDir, &fdFile);
+	hFind = FindFirstFile(szDir, &fdFile);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
 		return NULL;
 	}
 
-	fs_win_directory_iterator *it = (fs_win_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
+	it = (fs_win_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_win_directory_iterator));
 	memset(it, 0, sizeof(fs_win_directory_iterator));
 	it->fdFile = fdFile;
 	it->hFind = hFind;
@@ -452,13 +474,14 @@ typedef struct fs_posix_directory_iterator
 LIBFS_PUBLIC(fs_directory_iterator *)
 fs_open_dir(const char *path)
 {
+	fs_posix_directory_iterator *it;
 	DIR *d = opendir(path);
 	if (!d)
 	{
 		return NULL;
 	}
 
-	fs_posix_directory_iterator *it = (fs_posix_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
+	it = (fs_posix_directory_iterator *)_LIBFS_MALLOC(sizeof(fs_posix_directory_iterator));
 	memset(it, 0, sizeof(fs_posix_directory_iterator));
 	it->dir = d;
 	return (fs_directory_iterator *)it;
