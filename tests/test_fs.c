@@ -108,6 +108,54 @@ static void test_read_unknown_file(void **state)
     assert_null(data);
 }
 
+static void test_read_file_buffer(void **state)
+{
+    char cwd[LIBFS_MAX_PATH];
+    fs_assert_current_dir(&cwd);
+
+    char buf[LIBFS_MAX_PATH];
+    fs_assert_join_path(&buf, cwd, FILE_HELLO);
+
+    size_t size;
+    char data[6];
+    size = fs_read_file_buffer(buf, data, 6);
+    assert_int_equal(size, 5);
+    assert_string_equal(data, "hello");
+    assert_int_equal((int)data[size], '\0');
+}
+
+static void test_read_file_buffer_too_big(void **state)
+{
+    char cwd[LIBFS_MAX_PATH];
+    fs_assert_current_dir(&cwd);
+
+    char buf[LIBFS_MAX_PATH];
+    fs_assert_join_path(&buf, cwd, FILE_HELLO);
+
+    size_t size;
+    char data[10];
+    size = fs_read_file_buffer(buf, data, 10);
+    assert_int_equal(size, 5);
+    assert_string_equal(data, "hello");
+    assert_int_equal((int)data[5], '\0');
+}
+
+static void test_read_file_buffer_too_small(void **state)
+{
+    char cwd[LIBFS_MAX_PATH];
+    fs_assert_current_dir(&cwd);
+
+    char buf[LIBFS_MAX_PATH];
+    fs_assert_join_path(&buf, cwd, FILE_HELLO);
+
+    size_t size;
+    char data[3];
+    size = fs_read_file_buffer(buf, data, 3);
+    assert_int_equal(size, 5);
+    assert_string_equal(data, "he");
+    assert_int_equal((int)data[2], '\0');
+}
+
 static void test_read_file(void **state)
 {
     char cwd[LIBFS_MAX_PATH];
@@ -117,8 +165,11 @@ static void test_read_file(void **state)
     fs_assert_join_path(&buf, cwd, FILE_HELLO);
 
     size_t size;
-    void *data = fs_read_file(buf, &size);
+    char *data = (char *)fs_read_file(buf, &size);
     assert_non_null(data);
+    assert_int_equal(size, 5);
+    assert_string_equal(data, "hello");
+    assert_int_equal(((int *)data)[size], '\0');
 
     free(data);
 }
@@ -228,6 +279,9 @@ int main(void)
         cmocka_unit_test(test_is_directory),
         cmocka_unit_test(test_is_file),
         cmocka_unit_test(test_read_unknown_file),
+        cmocka_unit_test(test_read_file_buffer),
+        cmocka_unit_test(test_read_file_buffer_too_big),
+        cmocka_unit_test(test_read_file_buffer_too_small),
         cmocka_unit_test(test_read_file),
         cmocka_unit_test(test_iter_file),
         cmocka_unit_test(test_read_dir),
