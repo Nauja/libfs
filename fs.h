@@ -9,9 +9,9 @@ extern "C"
 /** Major version of libfs. */
 #define LIBFS_VERSION_MAJOR 0
 /** Minor version of libfs. */
-#define LIBFS_VERSION_MINOR 2
+#define LIBFS_VERSION_MINOR 3
 /** Patch version of libfs. */
-#define LIBFS_VERSION_PATCH 1
+#define LIBFS_VERSION_PATCH 0
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #ifndef HAVE_DIRENT_H
@@ -393,6 +393,23 @@ extern "C"
     fs_is_symlink(const char *path);
 
     /**
+     * Writes file content to buffer.
+     *
+     * @code{.c}
+     * void buf[1024];
+     * fs_read_file("foo.txt", buf, 1024);
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path to existing file
+     * @param[in] buf Some memory buffer
+     * @param[in] size Buffer size
+     * @return The number of bytes that would have been readen if
+     * buf was large enough (excluding the null-terminating character).
+     */
+    LIBFS_PUBLIC(size_t)
+    fs_read_file_buffer(const char *path, void *buf, size_t size);
+
+    /**
      * Reads a whole file content.
      *
      * @code{.c}
@@ -464,7 +481,8 @@ extern "C"
      * @endcode
      *
      * @param[in] path Some null-terminated path
-     * @return A pointer for iterating over the file if there is no error, NULL otherwise.
+     * @return A pointer for iterating over the file if there is no error,
+     * NULL otherwise.
      */
     LIBFS_PUBLIC(struct fs_file_iterator *)
     fs_iter_file(const char *path);
@@ -482,7 +500,8 @@ extern "C"
      *
      * @param[in] it Some opened file iterator
      * @param[out] c Character read
-     * @return The same it pointer or NULL if an error occurred or there is no more entry to iterate over.
+     * @return The same it pointer or NULL if an error occurred or there
+     * is no more entry to iterate over.
      */
     LIBFS_PUBLIC(struct fs_file_iterator *)
     fs_next_char(struct fs_file_iterator *it, char *c);

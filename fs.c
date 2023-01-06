@@ -228,36 +228,72 @@ fs_file_size(const char *path)
 	return stat.st_size;
 }
 
-LIBFS_PUBLIC(void *)
-fs_read_file(const char *path, size_t *size)
+static void *
+fs_read_file_internal(const char *path, void *buf, size_t size, size_t *readen)
 {
 	void *data;
-	int length;
+	size_t file_size;
+	size_t read_size;
 	FILE *file = fopen(path, "rb");
 	if (!file)
 	{
 		return NULL;
 	}
 
-	/* Check file size */
+	/* File size */
 	fseek(file, 0, SEEK_END);
-	length = ftell(file);
+	file_size = ftell(file);
 	fseek(file, 0, SEEK_SET);
 
-	/* Read file content */
-	data = _LIBFS_MALLOC(length + 1);
+	data = buf;
+	read_size = size;
 	if (!data)
 	{
-		fclose(file);
-		return NULL;
+		read_size = file_size;
+		size = file_size + 1;
+
+		/* Create a buffer large enough */
+		data = _LIBFS_MALLOC(size);
+		if (!data)
+		{
+			fclose(file);
+			return NULL;
+		}
 	}
 
-	fread(data, length, 1, file);
-	((char *)data)[length] = '\0';
+	if (size > 0)
+	{
+		read_size = fread(data, 1, read_size, file);
+
+		/* Append \0 */
+		if (read_size < size)
+		{
+			((char *)data)[read_size] = '\0';
+		}
+		else
+		{
+			((char *)data)[size - 1] = '\0';
+		}
+	}
+
 	fclose(file);
 
-	*size = length;
+	*readen = file_size;
 	return data;
+}
+
+LIBFS_PUBLIC(size_t)
+fs_read_file_buffer(const char *path, void *buf, size_t size)
+{
+	size_t readen = 0;
+	fs_read_file_internal(path, buf, size, &readen);
+	return readen;
+}
+
+LIBFS_PUBLIC(void *)
+fs_read_file(const char *path, size_t *size)
+{
+	return fs_read_file_internal(path, NULL, 0, size);
 }
 
 LIBFS_PUBLIC(int)
