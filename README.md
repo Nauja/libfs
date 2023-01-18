@@ -112,6 +112,7 @@ This will generate `libfs.a` if building as a static library and `liblibfs.so` i
 
 You can change the build process with a list of different options that you can pass to CMake. Turn them on with `On` and off with `Off`:
   * `-DLIBFS_STATIC=On`: Enable building as static library. (on by default)
+  * `-DLIBFS_SHARED=On`: Enable building as shared library. (on by default)
   * `-DLIBFS_UNIT_TESTING=On`: Enable building the tests. (on by default)
   * `-DLIBFS_DOXYGEN=On`: Enable building the docs. (off by default)
 
