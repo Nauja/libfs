@@ -23,9 +23,7 @@ jobs:
           pip install -r docs/requirements.txt
       - name: Build docs
         run: |
-          EVENT_CMAKE_OPTIONS="-DLIBFS_DOXYGEN=ON"
           mkdir -p build
           cd build
-          cmake .. $EVENT_CMAKE_OPTIONS || (rm -rf * && cmake .. $EVENT_CMAKE_OPTIONS)
+          cmake .. -DLIBFS_DOXYGEN=ON
           cmake --build .
-          make

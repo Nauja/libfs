@@ -5,6 +5,12 @@
 Changelog
 =========
 
+v0.2.1 (Jan 18, 2023)
+---------------------
+
+  * Add fs_read_file_buffer function
+  * Add option LIBFS_SHARED
+
 v0.2.0 (Dec 21, 2022)
 ---------------------
 
