@@ -169,7 +169,7 @@ static void test_read_file(void **state)
     assert_non_null(data);
     assert_int_equal(size, 5);
     assert_string_equal(data, "hello");
-    assert_int_equal(((int *)data)[size], '\0');
+    assert_int_equal((int)data[size], '\0');
 
     free(data);
 }

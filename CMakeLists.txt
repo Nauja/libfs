@@ -4,19 +4,13 @@ set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
  
-if (MSVC)
-list(APPEND LIBFS_COMPILE_FLAGS /W4 /WX)
-else()
-list(APPEND LIBFS_COMPILE_FLAGS -Wall -Wextra -pedantic -Werror)
-endif()
- 
 # Specify search path for CMake modules to be loaded by include() 
 # and find_package()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 set(LIBFS_VERSION_MAJOR 0)
 set(LIBFS_VERSION_MINOR 2)
-set(LIBFS_VERSION_PATCH 1)
+set(LIBFS_VERSION_PATCH 2)
 set(LIBFS_VERSION "${LIBFS_VERSION_MAJOR}.${LIBFS_VERSION_MINOR}.${LIBFS_VERSION_PATCH}")
 
 #find_package(Git)
@@ -53,11 +47,16 @@ if(Git_FOUND)
 endif()
 
 project(libfs VERSION ${LIBFS_VERSION} LANGUAGES C)
+ 
+if (MSVC)
+list(APPEND LIBFS_COMPILE_FLAGS /W4 /WX)
+else()
+list(APPEND LIBFS_COMPILE_FLAGS -Wall -Wextra -pedantic -Werror)
+endif()
 
 include(ConfigureChecks)
 
 option(LIBFS_STATIC "Build a static library" ON)
-option(LIBFS_SHARED "Build a shared library" ON)
 option(LIBFS_UNIT_TESTING "Unit Tests Enabled" ON)
 option(LIBFS_DOXYGEN "Docs Enabled" OFF)
 
@@ -76,25 +75,20 @@ set(LIBFS_LIB libfs)
 file(GLOB HEADERS fs.h)
 set(SOURCES fs.c)
 
-if (LIBFS_SHARED)
+add_library("${LIBFS_LIB}" SHARED "${HEADERS}" "${SOURCES}")
+set_target_properties(${LIBFS_LIB} PROPERTIES
+        C_STANDARD 90)
 
-    add_library("${LIBFS_LIB}" SHARED "${HEADERS}" "${SOURCES}")
-    set_target_properties(${LIBFS_LIB} PROPERTIES
-            C_STANDARD 90)
-
-    target_compile_options("${LIBFS_LIB}"
+target_compile_options("${LIBFS_LIB}"
+                        PRIVATE
+                            ${LIBFS_COMPILE_FLAGS}
+                            -DHAVE_CONFIG_H)
+                               
+target_include_directories(${LIBFS_LIB}
                             PRIVATE
-                                ${LIBFS_COMPILE_FLAGS}
-                                -DHAVE_CONFIG_H)
-                                
-    target_include_directories(${LIBFS_LIB}
-                                PRIVATE
-                                    ${CMAKE_CURRENT_BINARY_DIR}
-                                PUBLIC
-                                    ${CMAKE_CURRENT_SOURCE_DIR})
-
-endif (LIBFS_SHARED)
-
+                                ${CMAKE_CURRENT_BINARY_DIR}
+                            PUBLIC
+                                ${CMAKE_CURRENT_SOURCE_DIR})
 if (LIBFS_STATIC)
     
     set(LIBFS_STATIC_LIB "${LIBFS_LIB}-static")

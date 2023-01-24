@@ -105,7 +105,7 @@ CMake will correctly configure the defines at the top of [fs.h](https://github.c
 You can then build this library manually as described above, or by using:
 
 ```
-make
+cmake --build .
 ```
 
 This will generate `libfs.a` if building as a static library and `liblibfs.so` in the `build` directory.

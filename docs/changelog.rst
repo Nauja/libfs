@@ -5,6 +5,14 @@
 Changelog
 =========
 
+v0.2.2 (Jan 24, 2023)
+---------------------
+
+  * fs_file_size return type changed to off_t
+  * Fix MSVC order
+  * Fix compilation on Windows
+  * Add CI for VS2019
+
 v0.2.1 (Jan 18, 2023)
 ---------------------
 

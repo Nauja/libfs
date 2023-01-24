@@ -37,7 +37,37 @@ int snprintf(char *s, size_t n, const char *format, ...);
 #endif
 
 #ifndef fileno
+#if HAVE_WINDOWS_H
+/* fileno is deprecated for _fileno */
+#define fileno _fileno
+#else
 int fileno(FILE *stream);
+#endif
+#endif
+
+#if HAVE_WINDOWS_H
+/* fopen is deprecated for fopen_s */
+static FILE *fs_open(const char *filename, const char *mode)
+{
+	FILE *file;
+	if (fopen_s(&file, filename, mode) == 0)
+	{
+		return file;
+	}
+
+	return NULL;
+}
+#else
+#define fs_open fopen
+#endif
+
+#if HAVE_WINDOWS_H
+#ifndef S_ISDIR
+#define S_ISDIR(x) ((x & _S_IFDIR) == _S_IFDIR)
+#endif
+#ifndef S_ISREG
+#define S_ISREG(x) ((x & _S_IFREG) == _S_IFREG)
+#endif
 #endif
 
 #define LIBFS_FALSE 0
@@ -127,13 +157,13 @@ fs_copy(const char *from, const char *to)
 LIBFS_PUBLIC(void)
 fs_copy_file(const char *from, const char *to)
 {
-	FILE *ffrom = fopen(from, "rb");
+	FILE *ffrom = fs_open(from, "rb");
 	if (!ffrom)
 	{
 		return;
 	}
 
-	FILE *fto = fopen(to, "wb");
+	FILE *fto = fs_open(to, "wb");
 	if (!fto)
 	{
 		return;
@@ -209,11 +239,11 @@ fs_is_symlink(const char *path)
 #endif
 
 #ifdef HAVE_STDIO_H
-LIBFS_PUBLIC(size_t)
+LIBFS_PUBLIC(off_t)
 fs_file_size(const char *path)
 {
 	struct stat stat;
-	FILE *file = fopen(path, "rb");
+	FILE *file = fs_open(path, "rb");
 	if (!file)
 	{
 		return -1L;
@@ -221,7 +251,7 @@ fs_file_size(const char *path)
 
 	if (fstat(fileno(file), &stat) == -1)
 	{
-		return -1;
+		return -1L;
 	}
 
 	fclose(file);
@@ -234,7 +264,7 @@ fs_read_file_internal(const char *path, void *buf, size_t size, size_t *readen)
 	void *data;
 	size_t file_size;
 	size_t read_size;
-	FILE *file = fopen(path, "rb");
+	FILE *file = fs_open(path, "rb");
 	if (!file)
 	{
 		return NULL;
@@ -299,7 +329,7 @@ fs_read_file(const char *path, size_t *size)
 LIBFS_PUBLIC(int)
 fs_write_file(const char *path, const void *buf, size_t size)
 {
-	FILE *file = fopen(path, "wb");
+	FILE *file = fs_open(path, "wb");
 	if (!file)
 	{
 		return LIBFS_FALSE;
@@ -319,7 +349,7 @@ LIBFS_PUBLIC(fs_file_iterator *)
 fs_iter_file(const char *path)
 {
 	fs_file_iterator *it;
-	FILE *f = fopen(path, "r");
+	FILE *f = fs_open(path, "r");
 	if (!f)
 	{
 		return NULL;

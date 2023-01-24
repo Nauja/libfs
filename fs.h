@@ -11,7 +11,7 @@ extern "C"
 /** Minor version of libfs. */
 #define LIBFS_VERSION_MINOR 2
 /** Patch version of libfs. */
-#define LIBFS_VERSION_PATCH 1
+#define LIBFS_VERSION_PATCH 2
 
 /* Define to 1 if you have the <dirent.h> header file. */
 #ifndef HAVE_DIRENT_H
@@ -31,6 +31,11 @@ extern "C"
 /* Define to 1 if you have the <stdlib.h> header file. */
 #ifndef HAVE_STDLIB_H
 #define HAVE_STDLIB_H 1
+#endif
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#ifndef HAVE_SYS_TYPES_H
+#define HAVE_SYS_TYPES_H 1
 #endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
@@ -179,6 +184,10 @@ extern "C"
 #endif
 #endif
 
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
     /** Struct for custom hooks configuration. */
     struct fs_hooks
     {
@@ -322,14 +331,14 @@ extern "C"
      * Gets the size of an existing file.
      *
      * @code{.c}
-     * long size = fs_file_size("foo.txt")
+     * off_t size = fs_file_size("foo.txt")
      * printf("file size: %d", size);
      * @endcode
      *
      * @param[in] path Some null-terminated path
      * @return The size of the file, in bytes
      */
-    LIBFS_PUBLIC(size_t)
+    LIBFS_PUBLIC(off_t)
     fs_file_size(const char *path);
 
     /**
