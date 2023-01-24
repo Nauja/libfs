@@ -33,6 +33,11 @@ extern "C"
 #cmakedefine HAVE_STDLIB_H 1
 #endif
 
+/* Define to 1 if you have the <sys/types.h> header file. */
+#ifndef HAVE_SYS_TYPES_H
+#cmakedefine HAVE_SYS_TYPES_H 1
+#endif
+
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #ifndef HAVE_SYS_STAT_H
 #cmakedefine HAVE_SYS_STAT_H 1
@@ -179,6 +184,10 @@ extern "C"
 #endif
 #endif
 
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
     /** Struct for custom hooks configuration. */
     struct fs_hooks
     {
@@ -322,14 +331,14 @@ extern "C"
      * Gets the size of an existing file.
      *
      * @code{.c}
-     * long size = fs_file_size("foo.txt")
+     * off_t size = fs_file_size("foo.txt")
      * printf("file size: %d", size);
      * @endcode
      *
      * @param[in] path Some null-terminated path
      * @return The size of the file, in bytes
      */
-    LIBFS_PUBLIC(size_t)
+    LIBFS_PUBLIC(off_t)
     fs_file_size(const char *path);
 
     /**

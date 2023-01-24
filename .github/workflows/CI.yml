@@ -141,3 +141,23 @@ jobs:
         run: |
           cd build
           cmake --build . --target test ARGS="-V"
+  amd64_windows_vs2019:
+    runs-on: windows-2019
+    env:
+      CTEST_OUTPUT_ON_FAILURE: TRUE
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Dependencies
+        run: echo "C:\\msys64\\usr\\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Build libfs
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -G "Visual Studio 16 2019"
+          cmake --build .
+      - name: Test libfs
+        run: |
+          cd build
+          cmake --build . --target RUN_TESTS -v
