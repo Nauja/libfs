@@ -108,6 +108,51 @@ fs_init_hooks(fs_hooks *hooks)
 #define _LIBFS_MALLOC fs_global_hooks.malloc_fn
 #define _LIBFS_FREE fs_global_hooks.free_fn
 
+#if HAVE_STRING_H
+LIBFS_PUBLIC(const char *)
+fs_rsplit(const char *path)
+{
+	char *c1;
+	char *c2;
+
+	c1 = strrchr(path, '/');
+	if (!c1)
+	{
+		return strrchr(path, '\\');
+	}
+
+	c2 = strrchr(c1, '\\');
+	return c2 ? c2 : c1;
+}
+#endif
+
+#if HAVE_STDIO_H && HAVE_STRING_H
+LIBFS_PUBLIC(size_t)
+fs_dirname(const char *path, char *buf, size_t size)
+{
+	const char *c = fs_rsplit(path);
+	if (!c)
+	{
+		snprintf(buf, size, "%s", "");
+		return 0;
+	}
+
+	return snprintf(buf, size, "%.*s", (int)(((size_t)c) - ((size_t)path)), path);
+}
+
+LIBFS_PUBLIC(const char *)
+fs_basename(const char *path)
+{
+	const char *c = fs_rsplit(path);
+	if (!c)
+	{
+		return path;
+	}
+
+	return c + 1;
+}
+#endif
+
 #if HAVE_WINDOWS_H
 LIBFS_PUBLIC(char *)
 fs_absolute(const char *path, char *buf, size_t size)

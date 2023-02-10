@@ -14,6 +14,21 @@
 typedef struct fs_file_iterator fs_file_iterator;
 typedef struct fs_directory_iterator fs_directory_iterator;
 
+static void test_rsplit_root(void **state)
+{
+    assert_null(fs_rsplit("foo.txt"));
+}
+
+static void test_rsplit_forwardslash(void **state)
+{
+    assert_string_equal(fs_rsplit("/path\\to/foo.txt"), "/foo.txt");
+}
+
+static void test_rsplit_backslash(void **state)
+{
+    assert_string_equal(fs_rsplit("/path/to\\foo.txt"), "\\foo.txt");
+}
+
 static void test_absolute(void **state)
 {
     char cwd[256];
@@ -23,6 +38,54 @@ static void test_absolute(void **state)
     fs_absolute(cwd, buf, LIBFS_MAX_PATH);
 
     assert_string_equal(cwd, buf);
+}
+
+static void test_dirname_root_file(void **state)
+{
+    char buf[LIBFS_MAX_PATH];
+    fs_dirname("foo.txt", buf, LIBFS_MAX_PATH);
+    assert_string_equal(buf, "");
+}
+
+static void test_dirname_dot(void **state)
+{
+    char buf[LIBFS_MAX_PATH];
+    fs_dirname(".", buf, LIBFS_MAX_PATH);
+    assert_string_equal(buf, "");
+}
+
+static void test_dirname_file(void **state)
+{
+    char buf[LIBFS_MAX_PATH];
+    fs_dirname("/path/to\\bar.txt", buf, LIBFS_MAX_PATH);
+    assert_string_equal(buf, "/path/to");
+}
+
+static void test_dirname_empty(void **state)
+{
+    char buf[LIBFS_MAX_PATH];
+    fs_dirname("/foo/bar/", buf, LIBFS_MAX_PATH);
+    assert_string_equal(buf, "/foo/bar");
+}
+
+static void test_basename_root_file(void **state)
+{
+    assert_string_equal(fs_basename("foo.txt"), "foo.txt");
+}
+
+static void test_basename_dot(void **state)
+{
+    assert_string_equal(fs_basename("."), ".");
+}
+
+static void test_basename_file(void **state)
+{
+    assert_string_equal(fs_basename("/path/to\\bar.txt"), "bar.txt");
+}
+
+static void test_basename_empty(void **state)
+{
+    assert_string_equal(fs_basename("/foo/bar/"), "");
 }
 
 static void test_get_cwd(void **state)
@@ -271,7 +334,18 @@ static void test_hooks(void **state)
 int main(void)
 {
     const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_rsplit_root),
+        cmocka_unit_test(test_rsplit_forwardslash),
+        cmocka_unit_test(test_rsplit_backslash),
         cmocka_unit_test(test_absolute),
+        cmocka_unit_test(test_dirname_root_file),
+        cmocka_unit_test(test_dirname_dot),
+        cmocka_unit_test(test_dirname_file),
+        cmocka_unit_test(test_dirname_empty),
+        cmocka_unit_test(test_basename_root_file),
+        cmocka_unit_test(test_basename_dot),
+        cmocka_unit_test(test_basename_file),
+        cmocka_unit_test(test_basename_empty),
         cmocka_unit_test(test_get_cwd),
         cmocka_unit_test(test_path_join),
         cmocka_unit_test(test_exists),
