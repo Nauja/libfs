@@ -5,6 +5,11 @@
 Changelog
 =========
 
+v0.2.3 (Feb 10, 2023)
+---------------------
+
+  * Add fs_rsplit, fs_basename and fs_dirname
+
 v0.2.2 (Jan 24, 2023)
 ---------------------
 

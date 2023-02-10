@@ -235,6 +235,49 @@ extern "C"
     fs_absolute(const char *path, char *buf, size_t size);
 
     /**
+     * Gets a pointer to the rightmost path separator.
+     *
+     * @code{.c}
+     * const char* c = fs_rsplit("./path/to/foo.txt");
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return A pointer to the rightmost separator.
+     */
+    LIBFS_PUBLIC(const char*)
+    fs_rsplit(const char* path);
+
+    /**
+     * Gets the directory name of path.
+     *
+     * @code{.c}
+     * char dirname[256];
+     * fs_dirname("./foo.txt", dirname, 256);
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @param[out] buf Buffer for storing the result path
+     * @param[in] size Buffer size
+     * @return The number of bytes that would have been written if
+     * buf was large enough (excluding the null-terminating character).
+     */
+    LIBFS_PUBLIC(size_t)
+    fs_dirname(const char* path, char *buf, size_t size);
+
+    /**
+     * Gets the base name of path.
+     *
+     * @code{.c}
+     * const char* basename = fs_basename("./foo.txt");
+     * @endcode
+     *
+     * @param[in] path Some null-terminated path
+     * @return A pointer to the base name.
+     */
+    LIBFS_PUBLIC(const char*)
+    fs_basename(const char* path);
+
+    /**
      * Copies files or directories.
      *
      * @code{.c}
