@@ -161,3 +161,24 @@ jobs:
         run: |
           cd build
           cmake --build . --target RUN_TESTS -v
+  html:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mymindstorm/setup-emsdk@v7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build libfs
+        run: |
+          npm i
+          npm run build
+          mkdir -p build
+          cd build
+          emcmake cmake ..
+          cmake --build .
+      - name: Test libfs
+        run: |
+          npm run test

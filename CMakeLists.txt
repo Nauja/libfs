@@ -50,6 +50,8 @@ project(libfs VERSION ${LIBFS_VERSION} LANGUAGES C)
  
 if (MSVC)
 list(APPEND LIBFS_COMPILE_FLAGS /W4 /WX)
+elseif(EMSCRIPTEN)
+list(APPEND LIBFS_COMPILE_FLAGS -Wall -Wextra -Werror)
 else()
 list(APPEND LIBFS_COMPILE_FLAGS -Wall -Wextra -pedantic -Werror)
 endif()
@@ -57,8 +59,15 @@ endif()
 include(ConfigureChecks)
 
 option(LIBFS_STATIC "Build a static library" ON)
+option(LIBFS_SHARED "Build a shared library" ON)
 option(LIBFS_UNIT_TESTING "Unit Tests Enabled" ON)
 option(LIBFS_DOXYGEN "Docs Enabled" OFF)
+
+if (EMSCRIPTEN)
+set(LIBFS_SHARED OFF)
+set(LIBFS_UNIT_TESTING OFF)
+set(LIBFS_DOXYGEN OFF)
+endif()
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
@@ -75,29 +84,47 @@ set(LIBFS_LIB libfs)
 file(GLOB HEADERS fs.h)
 set(SOURCES fs.c)
 
-add_library("${LIBFS_LIB}" SHARED "${HEADERS}" "${SOURCES}")
-set_target_properties(${LIBFS_LIB} PROPERTIES
-        C_STANDARD 90)
+if (LIBFS_SHARED)
+    add_library("${LIBFS_LIB}" SHARED "${HEADERS}" "${SOURCES}")
+    set_target_properties(${LIBFS_LIB} PROPERTIES
+            C_STANDARD 90)
 
-target_compile_options("${LIBFS_LIB}"
-                        PRIVATE
-                            ${LIBFS_COMPILE_FLAGS}
-                            -DHAVE_CONFIG_H)
-                               
-target_include_directories(${LIBFS_LIB}
+    target_compile_options("${LIBFS_LIB}"
                             PRIVATE
-                                ${CMAKE_CURRENT_BINARY_DIR}
-                            PUBLIC
-                                ${CMAKE_CURRENT_SOURCE_DIR})
+                                ${LIBFS_COMPILE_FLAGS}
+                                -DHAVE_CONFIG_H)
+                                
+    target_include_directories(${LIBFS_LIB}
+                                PRIVATE
+                                    ${CMAKE_CURRENT_BINARY_DIR}
+                                PUBLIC
+                                    ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
 if (LIBFS_STATIC)
     
     set(LIBFS_STATIC_LIB "${LIBFS_LIB}-static")
 
-    add_library(${LIBFS_STATIC_LIB} STATIC "${HEADERS}" "${SOURCES}")
+    if (EMSCRIPTEN)
+        add_executable(${LIBFS_STATIC_LIB} "${HEADERS}" "${SOURCES}")
+    else()
+        add_library(${LIBFS_STATIC_LIB} STATIC "${HEADERS}" "${SOURCES}")
+    endif(EMSCRIPTEN)
+    
     set_target_properties(${LIBFS_STATIC_LIB} PROPERTIES
+if (not EMSCRIPTEN)
             C_STANDARD 90
+endif()
             OUTPUT_NAME "${LIBFS_LIB}"
             PREFIX "")
+
+    if (EMSCRIPTEN)
+
+        set_target_properties(${LIBFS_STATIC_LIB}
+            PROPERTIES LINK_FLAGS
+                "-O2 -g0 -s WASM=1 -s MODULARIZE=1 -s EXPORT_NAME=\"libfs\" -s FORCE_FILESYSTEM=1 -s ALLOW_MEMORY_GROWTH=1 -s EXPORTED_FUNCTIONS=['_malloc','_free'] -s EXPORTED_RUNTIME_METHODS=['ccall','allocateUTF8','FS','NODEFS'] --post-js ${CMAKE_CURRENT_SOURCE_DIR}/dist/fs.js -lnodefs.js")
+    
+    endif (EMSCRIPTEN)
 
     target_compile_options(${LIBFS_STATIC_LIB}
                            PRIVATE

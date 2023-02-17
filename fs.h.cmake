@@ -157,7 +157,12 @@ extern "C"
 #define __WINDOWS__
 #endif
 
-#ifdef __WINDOWS__
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#define LIBFS_CDECL
+#define LIBFS_STDCALL
+#define LIBFS_PUBLIC(type) type EMSCRIPTEN_KEEPALIVE
+#elif defined(__WINDOWS__)
 #define LIBFS_CDECL __cdecl
 #define LIBFS_STDCALL __stdcall
 

@@ -5,7 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/libfs/badge/?version=latest)](https://libfs.readthedocs.io/en/latest/?badge=latest)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Nauja/libfs/master/LICENSE)
 
-libfs aims to be a portable (OSX/Linux/Windows) and lightweight filesystem API written in ANSI C.
+libfs aims to be a portable (OSX/Linux/Windows/Emscripten) and lightweight filesystem API written in ANSI C.
 
 ## Examples
 
@@ -115,6 +115,28 @@ You can change the build process with a list of different options that you can p
   * `-DLIBFS_SHARED=On`: Enable building as shared library. (on by default)
   * `-DLIBFS_UNIT_TESTING=On`: Enable building the tests. (on by default)
   * `-DLIBFS_DOXYGEN=On`: Enable building the docs. (off by default)
+
+## Build with Emscripten
+
+Tested with emsdk == 3.1.31:
+
+```
+git clone https://github.com/Nauja/libfs.git
+cd libfs
+git submodule init
+git submodule update
+mkdir build
+cd build
+emcmake cmake ..
+```
+
+You can then build this library by using:
+
+```
+cmake --build .
+```
+
+This will generate `libfs.js` and `libfs.wasm` in the `build` directory.
 
 ## Build with Visual Studio
 

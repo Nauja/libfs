@@ -45,7 +45,7 @@ extern "C"
 
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
 #ifndef HAVE_SYS_SENDFILE_H
-#define HAVE_SYS_SENDFILE_H 1
+/* #undef HAVE_SYS_SENDFILE_H */
 #endif
 
 /* Define to 1 if you have the <string.h> header file. */
@@ -157,7 +157,12 @@ extern "C"
 #define __WINDOWS__
 #endif
 
-#ifdef __WINDOWS__
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#define LIBFS_CDECL
+#define LIBFS_STDCALL
+#define LIBFS_PUBLIC(type) type EMSCRIPTEN_KEEPALIVE
+#elif defined(__WINDOWS__)
 #define LIBFS_CDECL __cdecl
 #define LIBFS_STDCALL __stdcall
 
